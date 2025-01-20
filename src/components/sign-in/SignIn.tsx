@@ -17,7 +17,9 @@ import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { Usuario } from '../models/user/usuario';
 import { singInServi } from '../../services/LoginService';
-
+import { saveToken } from '../../services/auth/cookie';
+import { Navigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -118,13 +120,13 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     console.log(usuario)
    
     singInServi(usuario).then(data=>{
-      console.log(data)
+      Cookies.remove('authToken');
+      saveToken(data.access_token)
     }).catch(error =>{
       console.log(error)
     })
     
- 
-    return isValid;
+
   };
 
   return (
