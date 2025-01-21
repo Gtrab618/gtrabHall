@@ -23,7 +23,7 @@ export const getRanges = async ():Promise<Ranges[]>=>{
         });
     
     
-        return response.data
+        return response.data.data
     } catch (err) {
         deleteTokenCookie(err)
         return []

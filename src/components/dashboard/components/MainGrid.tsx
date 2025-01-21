@@ -6,39 +6,66 @@ import Copyright from '../internals/components/Copyright';
 import ChartUserByCountry from './ChartUserByCountry';
 import CustomizedTreeView from './CustomizedTreeView';
 import CustomizedDataGrid from './CustomizedDataGrid';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, FormHelperText } from '@mui/material';
+import { getRanges } from '../../../services/PayloadFacService';
+import { useEffect, useState } from 'react';
+import { Ranges } from '../../models/other/ranges';
 
 
 
 
 export default function MainGrid() {
-  return (
+  const [ranges, setRanges] = useState<Ranges[]>([]);
+  
+  useEffect(()=>{
+    getRanges().then(data=>{
+      setRanges(data)
+    
+    }).catch(error=>{
+  
+    })
+  },[])
 
- 
+
+  const [age, setAge] = useState('');
+
+
+  useEffect(()=>{
+    if(ranges.length>0){
+      setAge(ranges[0].id.toString());
+     
+    }
+  },[ranges])
+
+
+
+  return (
+   
+  
 
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
    <div>
 
       <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-filled-label" sx={{marginTop:"-5px"}}>Age</InputLabel>
+        <InputLabel id="demo-simple-select-filled-label" sx={{marginTop:"-5px"}}>Rangos</InputLabel>
         <Select
+          value={age}
+          displayEmpty
+          onChange={e=>setAge(e.target.value)}
           labelId="demo-simple-select-filled-label"
           id="demo-simple-select-filled"
           sx={{
             height:"35px"
           }}
         >
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+          {ranges?.map((item,index)=>(
+            <MenuItem key={index} value={item.id}>{item.document}</MenuItem>
+          ))}
+
         </Select>
       </FormControl>
-    </div>
-      
 
+    </div>
 
       {/* cards */}
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
@@ -63,3 +90,5 @@ export default function MainGrid() {
     </Box>
   );
 }
+
+

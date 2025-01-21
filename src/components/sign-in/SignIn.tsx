@@ -18,9 +18,7 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { Usuario } from '../models/user/usuario';
 import { singInServi } from '../../services/LoginService';
 import { saveToken } from '../../services/auth/cookie';
-import { Navigate, useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
-import { getRanges } from '../../services/PayloadFacService';
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
