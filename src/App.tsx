@@ -7,7 +7,16 @@ function App() {
 
   return (
 
-<Dashboard/>
+    <BrowserRouter>
+
+      <Routes>
+
+        <Route index element={<SignIn/>}></Route>
+        <Route path='/dashboard' element={<Dashboard/>}></Route> 
+
+      </Routes>
+
+    </BrowserRouter>
 
   )
 }

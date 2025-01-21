@@ -18,8 +18,9 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import { Usuario } from '../models/user/usuario';
 import { singInServi } from '../../services/LoginService';
 import { saveToken } from '../../services/auth/cookie';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { getRanges } from '../../services/PayloadFacService';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -65,6 +66,7 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 
 export default function SignIn(props: { disableCustomTheme?: boolean }) {
   var usuario = new Usuario()
+  const navigate = useNavigate();
 
 
   const [emailError, setEmailError] = React.useState(false);
@@ -120,13 +122,14 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     console.log(usuario)
    
     singInServi(usuario).then(data=>{
-      Cookies.remove('authToken');
+
       saveToken(data.access_token)
+      navigate("/dashboard")
+      
     }).catch(error =>{
       console.log(error)
     })
-    
-
+   
   };
 
   return (
