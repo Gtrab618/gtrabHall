@@ -16,61 +16,63 @@ import { Ranges } from '../../models/other/ranges';
 
 export default function MainGrid() {
   const [ranges, setRanges] = useState<Ranges[]>([]);
-  
-  useEffect(()=>{
-    getRanges().then(data=>{
+
+  useEffect(() => {
+    getRanges().then(data => {
       setRanges(data)
-    
-    }).catch(error=>{
-  
+
+    }).catch(error => {
+
     })
-  },[])
+  }, [])
 
 
   const [age, setAge] = useState('');
 
 
-  useEffect(()=>{
-    if(ranges.length>0){
+  useEffect(() => {
+    if (ranges.length > 0) {
       setAge(ranges[0].id.toString());
-     
+
     }
-  },[ranges])
+  }, [ranges])
 
 
 
   return (
-   
-  
+
+
 
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
-   <div>
 
-      <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel id="demo-simple-select-filled-label" sx={{marginTop:"-5px"}}>Rangos</InputLabel>
-        <Select
-          value={age}
-          displayEmpty
-          onChange={e=>setAge(e.target.value)}
-          labelId="demo-simple-select-filled-label"
-          id="demo-simple-select-filled"
-          sx={{
-            height:"35px"
-          }}
-        >
-          {ranges?.map((item,index)=>(
-            <MenuItem key={index} value={item.id}>{item.document}</MenuItem>
-          ))}
-
-        </Select>
-      </FormControl>
-
-    </div>
-
-      {/* cards */}
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+      <Typography component="h2" variant="h6">
         Crear factura
       </Typography>
+
+      <div>
+
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Rangos</InputLabel>
+          <Select
+            value={age}
+            displayEmpty
+            onChange={e => setAge(e.target.value)}
+            labelId="demo-simple-select-filled-label"
+            id="demo-simple-select-filled"
+            sx={{
+              height: "35px"
+            }}
+          >
+            {ranges?.map((item, index) => (
+              <MenuItem key={index} value={item.id}>{item.document}</MenuItem>
+            ))}
+
+          </Select>
+        </FormControl>
+
+      </div>
+
+
 
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Details
