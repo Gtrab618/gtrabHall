@@ -11,7 +11,7 @@ import {
   DateValidationError,
   FieldSection,
 } from '@mui/x-date-pickers/models';
-import { InputLabel, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
 interface ButtonFieldProps
   extends UseDateFieldProps<Dayjs, false>,

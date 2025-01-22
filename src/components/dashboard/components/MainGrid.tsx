@@ -6,16 +6,34 @@ import Copyright from '../internals/components/Copyright';
 import ChartUserByCountry from './ChartUserByCountry';
 import CustomizedTreeView from './CustomizedTreeView';
 import CustomizedDataGrid from './CustomizedDataGrid';
-import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel, TextField } from '@mui/material';
 import { getMunicipios, getRanges, getTributes, getUnidades } from '../../../services/PayloadFacService';
 import { useEffect, useState } from 'react';
 import { Ranges } from '../../models/other/ranges';
 import { Tributes } from '../../models/other/tributes';
 import { Municipios } from '../../models/other/municipios';
 import { Unidades } from '../../models/other/unidades';
-import * as React from 'react';
 import CustomDatePicker from './CustomDatePicker';
+import { TimeClock } from '@mui/x-date-pickers/TimeClock';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import { TimeField } from '@mui/x-date-pickers';
+import { NumericFormat } from 'react-number-format';
 
+const listIdentity = [
+  { text: 'Registro civil', id: '1' },
+  { text: 'Tarjeta de identidad', id: '2' },
+  { text: 'Cédula de ciudadanía', id: '3' },
+  { text: 'Tarjeta de extranjería', id: '4' },
+  { text: 'Cédula de extranjería', id: '5' },
+  { text: 'NIT', id: '6' },
+  { text: 'Pasaporte', id: '7' },
+  { text: 'Documento de identificación extranjero', id: '8' },
+  { text: 'PEP', id: '9' },
+  { text: 'NIT otro país', id: '10' },
+  { text: 'NUIP*', id: '11' },
+];
 
 export default function MainGrid() {
   const [ranges, setRanges] = useState<Ranges[]>([]);
@@ -28,6 +46,7 @@ export default function MainGrid() {
   const [tribute, setTribute] = useState('');
   const [municipio, setMunicipio] = useState('');
   const [unidad, setUnidad] = useState('');
+  const [document, setDocument] = useState('');
 
   useEffect(() => {
     getRanges().then(data => {
@@ -83,11 +102,9 @@ export default function MainGrid() {
 
 
   const [peFactu, setPefactu] = useState(false);
+  const [numberPhone, setNumberPhone] = useState(0);
 
-  useEffect(() => {
-    console.log(peFactu)
 
-  }, [peFactu])
   return (
 
 
@@ -186,13 +203,41 @@ export default function MainGrid() {
         peFactu ? (
           <div >
             <Grid container >
-              <Grid size={{xs:12, md:4, sm:3}}>
-              <CustomDatePicker text={"Fecha de inicio"} />
+              <Grid size={{ xs: 6, sm: 4, md: 3 }}>
+                <CustomDatePicker text={"Fecha de inicio"} />
               </Grid>
 
-              <Grid size={{xs:12, md:4, sm:3}}>
-              <CustomDatePicker text={"Fecha de inicio"} />
+              <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimeField
+                    sx={{
+                      marginTop: "18px"
+                    }}
+                    label="Hora de inicio"
+                    defaultValue={dayjs('2022-04-17T15:30')}
+                    format="HH:mm:ss"
+                  />
+                </LocalizationProvider>
               </Grid>
+
+              <Grid size={{ xs: 6, sm: 4, md: 3 }}>
+                <CustomDatePicker text={"Fecha de fin"} />
+              </Grid>
+
+
+              <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <TimeField
+                    sx={{
+                      marginTop: "18px"
+                    }}
+                    label="Hora de fin"
+                    defaultValue={dayjs('2022-04-17T15:30')}
+                    format="HH:mm:ss"
+                  />
+                </LocalizationProvider>
+              </Grid>
+
             </Grid>
 
           </div>
@@ -209,15 +254,115 @@ export default function MainGrid() {
       <Typography component="p">
         Datos cliente
       </Typography>
+      <div>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 6, sm: 4, md: 3 }}>
+
+            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Identidad</InputLabel>
+              <Select
+                value={document}
+                displayEmpty
+                onChange={e => setDocument(e.target.value)}
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                sx={{
+                  height: "35px"
+                }}
+              >
+                {listIdentity?.map((item, index) => (
+                  <MenuItem key={index} value={item.id}>{item.text}</MenuItem>
+                ))}
+
+              </Select>
+            </FormControl>
+
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <TextField sx={{
+              top: "6px"
+            }} id="outlined-basic" label="Número documento" variant="outlined" slotProps={{
+              htmlInput: {
+                maxLength: 15, // Aplicar máximo de caracteres al `<input>` subyacente
+              },
+            }} />
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <TextField sx={{
+              top: "6px"
+            }} label="Nombre" variant="outlined" slotProps={{
+              htmlInput: {
+                maxLength: 30, // Aplicar máximo de caracteres al `<input>` subyacente
+              },
+            }} />
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <TextField sx={{
+              top: "6px"
+            }} label="Empresa" variant="outlined" slotProps={{
+              htmlInput: {
+                maxLength: 30, // Aplicar máximo de caracteres al `<input>` subyacente
+              },
+            }} />
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <TextField sx={{
+              top: "6px"
+            }} label="Correo electrónico" variant="outlined" slotProps={{
+              htmlInput: {
+                maxLength: 30, // Aplicar máximo de caracteres al `<input>` subyacente
+              },
+            }} />
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <TextField sx={{
+              top: "6px"
+            }} label="Dirección" variant="outlined" slotProps={{
+              htmlInput: {
+                maxLength: 30, // Aplicar máximo de caracteres al `<input>` subyacente
+              },
+            }} />
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <NumericFormat
+            
+              onChange={e => setNumberPhone(e.target.value)}
+              customInput={TextField}
+              valueIsNumericString
+              variant="standard"
+              label="Teléfono"
+            />
+          </Grid>
+        </Grid>
 
 
+      </div>
+      <Divider sx={{ margin: '20px 0' }} />
+      <Typography component="p">
+        Datos Producto
+      </Typography>
+      
+
+
+
+
+
+      
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
         Details
       </Typography>
       <Grid container spacing={2} columns={12}>
+
         <Grid size={{ xs: 12, lg: 9 }}>
           <CustomizedDataGrid />
         </Grid>
+
         <Grid size={{ xs: 12, lg: 3 }}>
           <Stack gap={2} direction={{ xs: 'column', sm: 'row', lg: 'column' }}>
             <CustomizedTreeView />
