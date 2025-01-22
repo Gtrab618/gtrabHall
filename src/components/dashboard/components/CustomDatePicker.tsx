@@ -11,6 +11,7 @@ import {
   DateValidationError,
   FieldSection,
 } from '@mui/x-date-pickers/models';
+import { InputLabel, Typography } from '@mui/material';
 
 interface ButtonFieldProps
   extends UseDateFieldProps<Dayjs, false>,
@@ -51,12 +52,13 @@ function ButtonField(props: ButtonFieldProps) {
   );
 }
 
-export default function CustomDatePicker() {
+export default function CustomDatePicker({text}:{text:string}) {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs('2023-04-17'));
   const [open, setOpen] = React.useState(false);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDayjs} >
+      <Typography marginLeft={"10px"} >{text}</Typography>
       <DatePicker
         value={value}
         label={value == null ? null : value.format('MMM DD, YYYY')}

@@ -6,39 +6,88 @@ import Copyright from '../internals/components/Copyright';
 import ChartUserByCountry from './ChartUserByCountry';
 import CustomizedTreeView from './CustomizedTreeView';
 import CustomizedDataGrid from './CustomizedDataGrid';
-import { FormControl, InputLabel, Select, MenuItem, SelectChangeEvent, FormHelperText } from '@mui/material';
-import { getRanges } from '../../../services/PayloadFacService';
+import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel } from '@mui/material';
+import { getMunicipios, getRanges, getTributes, getUnidades } from '../../../services/PayloadFacService';
 import { useEffect, useState } from 'react';
 import { Ranges } from '../../models/other/ranges';
-
-
+import { Tributes } from '../../models/other/tributes';
+import { Municipios } from '../../models/other/municipios';
+import { Unidades } from '../../models/other/unidades';
+import * as React from 'react';
+import CustomDatePicker from './CustomDatePicker';
 
 
 export default function MainGrid() {
   const [ranges, setRanges] = useState<Ranges[]>([]);
+  const [tributes, setTributes] = useState<Tributes[]>([]);
+  const [municipios, setMunicipios] = useState<Municipios[]>([]);
+  const [unidades, setUnidades] = useState<Unidades[]>([])
+
+
+  const [rage, setRange] = useState('');
+  const [tribute, setTribute] = useState('');
+  const [municipio, setMunicipio] = useState('');
+  const [unidad, setUnidad] = useState('');
 
   useEffect(() => {
     getRanges().then(data => {
       setRanges(data)
+    })
+  }, [])
 
-    }).catch(error => {
+  useEffect(() => {
+    getTributes().then(data => {
+      setTributes(data)
+    })
+  }, [])
 
+  useEffect(() => {
+    getMunicipios().then(data => {
+      setMunicipios(data)
+    })
+  }, [])
+
+  useEffect(() => {
+    getUnidades().then(data => {
+      setUnidades(data)
     })
   }, [])
 
 
-  const [age, setAge] = useState('');
-
 
   useEffect(() => {
     if (ranges.length > 0) {
-      setAge(ranges[0].id.toString());
-
+      setRange(ranges[0].id.toString());
     }
   }, [ranges])
 
+  useEffect(() => {
+    if (tributes.length > 0) {
+      setTribute(tributes[0].id.toString());
+    }
+  }, [tributes])
+
+  useEffect(() => {
+    if (municipios.length > 0) {
+      setMunicipio(municipios[0].id.toString());
+    }
+
+  }, [municipios])
+
+  useEffect(() => {
+    if (unidades.length > 0) {
+      setUnidad(unidades[0].id.toString());
+    }
+
+  }, [unidades])
 
 
+  const [peFactu, setPefactu] = useState(false);
+
+  useEffect(() => {
+    console.log(peFactu)
+
+  }, [peFactu])
   return (
 
 
@@ -49,14 +98,17 @@ export default function MainGrid() {
         Crear factura
       </Typography>
 
+      <Typography component="p">
+        Datos factura
+      </Typography>
       <div>
 
         <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Rangos</InputLabel>
           <Select
-            value={age}
+            value={rage}
             displayEmpty
-            onChange={e => setAge(e.target.value)}
+            onChange={e => setRange(e.target.value)}
             labelId="demo-simple-select-filled-label"
             id="demo-simple-select-filled"
             sx={{
@@ -70,8 +122,93 @@ export default function MainGrid() {
           </Select>
         </FormControl>
 
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Tributos</InputLabel>
+          <Select
+            value={tribute}
+            displayEmpty
+            onChange={e => setTribute(e.target.value)}
+            labelId="demo-simple-select-filled-label"
+            id="demo-simple-select-filled"
+            sx={{
+              height: "35px"
+            }}
+          >
+            {tributes?.map((item, index) => (
+              <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+            ))}
+
+          </Select>
+        </FormControl>
+
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Municipios</InputLabel>
+          <Select
+            value={municipio}
+            displayEmpty
+            onChange={e => setMunicipio(e.target.value)}
+            labelId="demo-simple-select-filled-label"
+            id="demo-simple-select-filled"
+            sx={{
+              height: "35px"
+            }}
+          >
+            {municipios?.map((item, index) => (
+              <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+            ))}
+
+          </Select>
+        </FormControl>
+
+        <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Unidades</InputLabel>
+          <Select
+            value={unidad}
+            displayEmpty
+            onChange={e => setUnidad(e.target.value)}
+            labelId="demo-simple-select-filled-label"
+            id="demo-simple-select-filled"
+            sx={{
+              height: "35px"
+            }}
+          >
+            {unidades?.map((item, index) => (
+              <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+            ))}
+
+          </Select>
+        </FormControl>
       </div>
 
+      <FormControlLabel control={<Checkbox />} onChange={e => setPefactu(e.target.checked)} label="Período Facturación" />
+
+      {
+        peFactu ? (
+          <div >
+            <Grid container >
+              <Grid size={{xs:12, md:4, sm:3}}>
+              <CustomDatePicker text={"Fecha de inicio"} />
+              </Grid>
+
+              <Grid size={{xs:12, md:4, sm:3}}>
+              <CustomDatePicker text={"Fecha de inicio"} />
+              </Grid>
+            </Grid>
+
+          </div>
+
+
+
+        ) : (
+          null
+        )
+      }
+
+      <Divider sx={{ margin: '20px 0' }} />
+
+      <Typography component="p">
+        Datos cliente
+      </Typography>
 
 
       <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
