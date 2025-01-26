@@ -17,39 +17,11 @@ import Select from '@mui/material/Select';
 import { MenuItem, Switch } from '@mui/material';
 import { Unidades } from '../models/other/unidades';
 import { useState } from 'react';
-
-function createData(
-  id: string,
-  name: number,
-  count: number,
-  price: number,
-  impuesto: number,
-  total: number,
-
-) {
-  return {
-    id,
-    name,
-    count,
-    price,
-    impuesto,
-    total,
-    history: [
-      {
-        date: '2020-01-05',
-        customerId: '11091700',
-        amount: 3,
-      },
-      {
-        date: '2020-01-02',
-        customerId: 'Anonymous',
-        amount: 1,
-      },
-    ],
-  };
-}
+import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
+import { Items } from '../models/other/items';
 
 
+const [items,setItems]=useState<Items[]>([])
 
 function Row(props: { row: ReturnType<typeof createData> }) {
 
@@ -59,8 +31,11 @@ function Row(props: { row: ReturnType<typeof createData> }) {
     { id: 3, code: "C3", name: "Unidad 3" },
   ]);
 
+  {/* 
   const [unidad, setUnidad] = useState<Unidades>(new Unidades());
+*/}
 
+  const [unidad, setUnidad] = useState('');
   const { row } = props;
   const [open, setOpen] = React.useState(false);
 
@@ -68,7 +43,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   React.useEffect(() => {
     // Asignar la primera unidad al montar el componente
     if (unidades.length > 0) {
-      setUnidad(unidades[0].id);
+      setUnidad(unidades[0].id.toString());
     }
   }, []);
 
@@ -86,6 +61,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
+
         </TableCell>
 
         <TableCell component="th" scope="row" sx={{ minWidth: "75px" }}>
@@ -206,28 +182,23 @@ function Row(props: { row: ReturnType<typeof createData> }) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
-                History
+                Retenciones
               </Typography>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>Customer</TableCell>
-                    <TableCell align="right">Amount</TableCell>
-                    <TableCell align="right">Total price ($)</TableCell>
+                    <TableCell>Código Retención</TableCell>
+                    <TableCell>Porcentaje</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {row.history.map((historyRow) => (
                     <TableRow key={historyRow.date}>
+
                       <TableCell component="th" scope="row">
                         {historyRow.date}
                       </TableCell>
                       <TableCell>{historyRow.customerId}</TableCell>
-                      <TableCell align="right">{historyRow.amount}</TableCell>
-                      <TableCell align="right">
-                        {Math.round(historyRow.amount * row.price * 100) / 100}
-                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -239,16 +210,27 @@ function Row(props: { row: ReturnType<typeof createData> }) {
     </React.Fragment>
   );
 }
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99)
-];
+
 export default function CollapsibleTable() {
+  const [rows, setRows] = useState([
+    createData("Frozen yoghurt", 159, 6.0, 24, 4.0, 3.99)
+  ]);
+ const print= () =>{
+  const test = [createData("Frozenhur", 159, 6.0, 24, 1.0, 2.99)];
+  setRows((prevArray) => [...prevArray, ...test]);
+  console.log(rows.length)
+ }
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
-            <TableCell>+</TableCell>
+            <TableCell>
+              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => print()}>
+                <AddCircleOutlineSharpIcon/>
+              </IconButton>
+            </TableCell>
             <TableCell align="center">Código Referencia</TableCell>
             <TableCell align="center">Nombre</TableCell>
             <TableCell align="center">Cantidad</TableCell>
