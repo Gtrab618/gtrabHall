@@ -19,11 +19,12 @@ import { Unidades } from '../models/other/unidades';
 import { useState } from 'react';
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import { Items } from '../models/other/items';
+import { withholding } from '../models/other/withholding';
 
 
-const [items,setItems]=useState<Items[]>([])
 
-function Row(props: { row: ReturnType<typeof createData> }) {
+
+function Row(row: Items) {
 
   const [unidades, setUnidades] = React.useState<Unidades[]>([
     { id: 1, code: "A1", name: "Unidad 1" },
@@ -31,14 +32,24 @@ function Row(props: { row: ReturnType<typeof createData> }) {
     { id: 3, code: "C3", name: "Unidad 3" },
   ]);
 
+
   {/* 
   const [unidad, setUnidad] = useState<Unidades>(new Unidades());
 */}
 
   const [unidad, setUnidad] = useState('');
-  const { row } = props;
   const [open, setOpen] = React.useState(false);
 
+  const subItemAdd = () => {
+    const newItem = new withholding(); // Crear una nueva instancia de `withholding`
+    newItem.code = "asdf";
+    newItem.withholding_tax_rate = "12%";
+    {...row , withholding: [...row.withholding_taxes, withholding]}
+
+    // Actualizar el estado de `currentRow` con el nuevo elemento agregado
+   
+    console.log(row.withholding_taxes)
+  };
 
   React.useEffect(() => {
     // Asignar la primera unidad al montar el componente
@@ -184,6 +195,9 @@ function Row(props: { row: ReturnType<typeof createData> }) {
               <Typography variant="h6" gutterBottom component="div">
                 Retenciones
               </Typography>
+              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => subItemAdd()}>
+                <AddCircleOutlineSharpIcon />
+              </IconButton>
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
@@ -192,13 +206,13 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.history.map((historyRow) => (
-                    <TableRow key={historyRow.date}>
+                  {row.withholding_taxes?.map((holding) => (
+                    <TableRow key={holding.code}>
 
                       <TableCell component="th" scope="row">
-                        {historyRow.date}
+                        {holding.code}
                       </TableCell>
-                      <TableCell>{historyRow.customerId}</TableCell>
+                      <TableCell>{holding.withholding_tax_rate}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -212,14 +226,23 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 }
 
 export default function CollapsibleTable() {
-  const [rows, setRows] = useState([
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0, 3.99)
-  ]);
- const print= () =>{
-  const test = [createData("Frozenhur", 159, 6.0, 24, 1.0, 2.99)];
-  setRows((prevArray) => [...prevArray, ...test]);
-  console.log(rows.length)
- }
+
+  const [items, setItems] = useState<Items[]>([])
+
+  const addItem = () => {
+
+    const newItem = new Items(); // Crear una nueva instancia de `Items`
+    newItem.code_reference = "REF001"; // Asignar valores a las propiedades según sea necesario
+    newItem.name = "Producto 1";
+    newItem.quantity = 10;
+    newItem.price = 100;
+    newItem.withholding_taxes = [
+      { code: "Tax1", withholding_tax_rate: "5" }, // Ejemplo de datos para withholding_taxes
+      { code: "Tax2", withholding_tax_rate: "10" },
+    ];
+
+    setItems((prevItems) => [...prevItems, newItem])
+  }
 
   return (
     <TableContainer component={Paper}>
@@ -227,8 +250,8 @@ export default function CollapsibleTable() {
         <TableHead>
           <TableRow>
             <TableCell>
-              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => print()}>
-                <AddCircleOutlineSharpIcon/>
+              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => addItem()}>
+                <AddCircleOutlineSharpIcon />
               </IconButton>
             </TableCell>
             <TableCell align="center">Código Referencia</TableCell>
@@ -244,8 +267,8 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
+          {items?.map((itemTable) => (
+            <Row key={itemTable.tribute_id} {...itemTable} />
           ))}
         </TableBody>
       </Table>
