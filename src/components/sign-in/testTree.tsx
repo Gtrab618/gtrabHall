@@ -21,16 +21,16 @@ import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp
 import { Items } from '../models/other/items';
 import { withholding } from '../models/other/withholding';
 
-interface subItem{
+interface itemsProps{
   
-  subItemProp:withholding;
-  onChange: (subItemProp: withholding) => void;
-  onRemove: (id: number) => void;
+  itemProp:Items;
+  onChange: (itemTest: Items) => void;
+
 
 }
 
 
-function Row(row: Items) {
+function Row(props:itemsProps) {
 
   const [unidades, setUnidades] = React.useState<Unidades[]>([
     { id: 1, code: "A1", name: "Unidad 1" },
@@ -46,16 +46,13 @@ function Row(row: Items) {
   const [unidad, setUnidad] = useState('');
   const [open, setOpen] = React.useState(false);
 
-  const subItemAdd = () => {
-    const newItem = new withholding(); // Crear una nueva instancia de `withholding`
-    newItem.code = "asdf";
-    newItem.withholding_tax_rate = "12%";
-    {...row , withholding: [...row.withholding_taxes, withholding]}
-
-    // Actualizar el estado de `currentRow` con el nuevo elemento agregado
-   
-    console.log(row.withholding_taxes)
-  };
+    const updateTest2=()=>{
+      const itemnew: withholding={
+        code:"asdf",
+        withholding_tax_rate:"asdf"
+      }
+      props.onChange({ ...props.itemProp,withholding_taxes:[...props.itemProp.withholding_taxes , itemnew] })
+    }
 
   React.useEffect(() => {
     // Asignar la primera unidad al montar el componente
@@ -201,7 +198,7 @@ function Row(row: Items) {
               <Typography variant="h6" gutterBottom component="div">
                 Retenciones
               </Typography>
-              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => subItemAdd()}>
+              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => props.onChange(props.itemProp)}>
                 <AddCircleOutlineSharpIcon />
               </IconButton>
               <Table size="small" aria-label="purchases">
@@ -212,7 +209,7 @@ function Row(row: Items) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {row.withholding_taxes?.map((holding) => (
+                  {props.itemProp.withholding_taxes?.map((holding) => (
                     <TableRow key={holding.code}>
 
                       <TableCell component="th" scope="row">
@@ -250,6 +247,17 @@ export default function CollapsibleTable() {
     setItems((prevItems) => [...prevItems, newItem])
   }
 
+  const addsubItem = (teim:Items)=>{
+ 
+  
+    const newData: withholding={
+      code:"adsf",
+      withholding_tax_rate:"sadf"
+    }
+
+    
+  } 
+
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
@@ -274,7 +282,7 @@ export default function CollapsibleTable() {
         </TableHead>
         <TableBody>
           {items?.map((itemTable) => (
-            <Row key={itemTable.tribute_id} {...itemTable} />
+            <Row key={itemTable.tribute_id} onChange={addsubItem} itemProp={itemTable} />
           ))}
         </TableBody>
       </Table>
