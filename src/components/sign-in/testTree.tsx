@@ -21,7 +21,13 @@ import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp
 import { Items } from '../models/other/items';
 import { withholding } from '../models/other/withholding';
 
+interface subItem{
+  
+  subItemProp:withholding;
+  onChange: (subItemProp: withholding) => void;
+  onRemove: (id: number) => void;
 
+}
 
 
 function Row(row: Items) {
