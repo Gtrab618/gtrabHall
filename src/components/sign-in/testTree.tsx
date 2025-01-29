@@ -20,6 +20,7 @@ import { useState } from 'react';
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import { Items } from '../models/other/items';
 import { withholding } from '../models/other/withholding';
+import { CodeStandard } from '../models/other/codeStandard';
 
 interface itemsProps{
   
@@ -39,11 +40,20 @@ function Row(props:itemsProps) {
   ]);
 
 
+  const [codeStandardList, setCodeStandardList] =React.useState<CodeStandard[]>([
+    {id:1,name:"Estándar de adopción del contribuyente"},
+    {id:2,name:"UNSPSC"},
+    {id:3,name:"Partida Arancelaria"},
+    {id:4, name:"GTIN"}
+  ])
   {/* 
   const [unidad, setUnidad] = useState<Unidades>(new Unidades());
 */}
 
   const [unidad, setUnidad] = useState('');
+
+  const [codStandard,setCodStandard]= useState('')
+  
   const [open, setOpen] = React.useState(false);
 
     const updateTest2=()=>{
@@ -59,6 +69,10 @@ function Row(props:itemsProps) {
     if (unidades.length > 0) {
       setUnidad(unidades[0].id.toString());
     }
+    if(codStandard.length>0){
+      setCodStandard(codeStandardList[0].id.toString())
+    }
+
   }, []);
 
   return (
@@ -78,23 +92,27 @@ function Row(props:itemsProps) {
 
         </TableCell>
 
+        {/*item.*.code_reference*/}
         <TableCell component="th" scope="row" sx={{ minWidth: "75px" }}>
-          <TextField variant="outlined" slotProps={{
+          <TextField variant="outlined" value={props.itemProp.code_reference} disabled slotProps={{
             htmlInput: {
               maxLength: 10, // Aplicar máximo de caracteres al `<input>` subyacente
             },
           }} />
         </TableCell>
 
+         {/*item.*.name*/}
         <TableCell sx={{ minWidth: "100px", height: "100px" }}>
-          <TextField variant="outlined" slotProps={{
+          <TextField variant="outlined" value={props.itemProp.name} onChange={(e)=>props.onChange({...props.itemProp,name: e.target.value})} slotProps={{
             htmlInput: {
               maxLength: 10, // Aplicar máximo de caracteres al `<input>` subyacente
             },
           }} />
         </TableCell>
+
+        {/* item.*.quantity*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined"
+          <TextField variant="outlined" value={props.itemProp.quantity} onChange={(e)=>props.onChange({...props.itemProp,quantity: isNaN(parseInt(e.target.value)) ? 1: parseInt(e.target.value)})}
             type="number"
             defaultValue="1"
             slotProps={{
@@ -105,32 +123,10 @@ function Row(props:itemsProps) {
               },
             }} />
         </TableCell>
-        <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined"
-            type="number"
-            defaultValue="0"
-            slotProps={{
-              htmlInput: {
-                min: 0,
-                max: 100, // Aplicar máximo de caracteres al `<input>` subyacente
 
-              },
-            }} />
-        </TableCell>
+        {/* item.*.discount_rate*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined"
-            type="number"
-            defaultValue="1"
-            slotProps={{
-              htmlInput: {
-                min: 0,
-                max: 100, // Aplicar máximo de caracteres al `<input>` subyacente
-
-              },
-            }} />
-        </TableCell>
-        <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined"
+          <TextField variant="outlined" value={props.itemProp.discount_rate} onChange={(e)=>props.onChange({...props.itemProp, discount_rate:  isNaN(parseInt(e.target.value)) ? 0: parseInt(e.target.value)})}
             type="number"
             defaultValue="1"
             slotProps={{
@@ -142,6 +138,32 @@ function Row(props:itemsProps) {
             }} />
         </TableCell>
 
+        {/* item.*.tax_rate*/}
+        <TableCell sx={{ minWidth: "100px" }}>
+          <TextField variant="outlined" value={props.itemProp.tax_rate} onChange={(e)=>props.onChange({...props.itemProp,tax_rate: isNaN(parseInt(e.target.value)) ? "0" : e.target.value })}
+            type="number"
+            defaultValue="1"
+            slotProps={{
+              htmlInput: {
+                min: 0,
+                max: 100, // Aplicar máximo de caracteres al `<input>` subyacente
+
+              },
+            }} />
+        </TableCell>
+
+        {/* item.*.price*/}
+        <TableCell sx={{ minWidth: "100px" }}>
+          <TextField variant="outlined" value={props.itemProp.price} onChange={(e)=> props.onChange({...props.itemProp,price : isNaN (parseInt(e.target.value)) ? 1 : parseInt(e.target.value) })}
+            type="number"
+            slotProps={{
+              htmlInput: {
+                min: 1
+              },
+            }} />
+        </TableCell>
+
+        {/*item.*.unit_measure_id*/}
         <TableCell sx={{ minWidth: "100px" }}>
           <Select
             value={unidad}
@@ -160,18 +182,35 @@ function Row(props:itemsProps) {
           </Select>
         </TableCell>
 
+
+        {/*item.*.tax_rate*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" slotProps={{
-            htmlInput: {
-              maxLength: 10, // Aplicar máximo de caracteres al `<input>` subyacente
-            },
-          }} />
+          <Select
+            value={codStandard}
+            displayEmpty
+            onChange={e => setCodStandard(e.target.value)}
+            labelId="demo-simple-select-filled-label"
+            id="demo-simple-select-filled"
+            sx={{
+              height: "35px"
+            }}
+          >
+            {codeStandardList?.map((item, index) => (
+              <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+            ))}
+
+          </Select>
         </TableCell>
 
+
+
+        {/*items.*.is_excluded*/}
         <TableCell>
-          <Switch />
+          <Switch checked={props.itemProp.is_excluded === 1} onChange={(e)=> props.onChange({...props.itemProp, is_excluded : event.target.checked ? 1 : 0 })}/>
         </TableCell>
 
+
+        {/*items.*.tribute_id */}
         <TableCell sx={{ minWidth: "100px" }}>
           <Select
             value={unidad}
@@ -198,7 +237,7 @@ function Row(props:itemsProps) {
               <Typography variant="h6" gutterBottom component="div">
                 Retenciones
               </Typography>
-              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => props.onChange(props.itemProp)}>
+              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => updateTest2()}>
                 <AddCircleOutlineSharpIcon />
               </IconButton>
               <Table size="small" aria-label="purchases">
@@ -209,8 +248,8 @@ function Row(props:itemsProps) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {props.itemProp.withholding_taxes?.map((holding) => (
-                    <TableRow key={holding.code}>
+                  {props.itemProp.withholding_taxes?.map((holding,index) => (
+                    <TableRow key={index}>
 
                       <TableCell component="th" scope="row">
                         {holding.code}
@@ -235,7 +274,7 @@ export default function CollapsibleTable() {
   const addItem = () => {
 
     const newItem = new Items(); // Crear una nueva instancia de `Items`
-    newItem.code_reference = "REF001"; // Asignar valores a las propiedades según sea necesario
+    newItem.code_reference ="prod"+items.length; // Asignar valores a las propiedades según sea necesario
     newItem.name = "Producto 1";
     newItem.quantity = 10;
     newItem.price = 100;
@@ -247,15 +286,13 @@ export default function CollapsibleTable() {
     setItems((prevItems) => [...prevItems, newItem])
   }
 
-  const addsubItem = (teim:Items)=>{
+  const updateSubItems = (itemUpdate:Items)=>{
  
-  
-    const newData: withholding={
-      code:"adsf",
-      withholding_tax_rate:"sadf"
-    }
-
-    
+    const itemsActualizados= items.map((p)=>
+    p.code_reference === itemUpdate.code_reference ? itemUpdate : p
+    );
+    setItems(itemsActualizados)
+   
   } 
 
   return (
@@ -271,8 +308,8 @@ export default function CollapsibleTable() {
             <TableCell align="center">Código Referencia</TableCell>
             <TableCell align="center">Nombre</TableCell>
             <TableCell align="center">Cantidad</TableCell>
-            <TableCell align="center">Descuento</TableCell>
-            <TableCell align="center">Impuesto</TableCell>
+            <TableCell align="center">Descuento %</TableCell>
+            <TableCell align="center">Impuesto %</TableCell>
             <TableCell align="center">Precio</TableCell>
             <TableCell align="center">Unidad</TableCell>
             <TableCell align="center">Código Estándar</TableCell>
@@ -281,8 +318,8 @@ export default function CollapsibleTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items?.map((itemTable) => (
-            <Row key={itemTable.tribute_id} onChange={addsubItem} itemProp={itemTable} />
+          {items?.map((itemTable, index) => (
+            <Row key={index} onChange={updateSubItems} itemProp={itemTable} />
           ))}
         </TableBody>
       </Table>

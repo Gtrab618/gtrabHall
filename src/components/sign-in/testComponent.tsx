@@ -43,6 +43,7 @@ const ProductoComponent: React.FC<ProductoProps> = ({ producto, onChange, onRemo
       nombre: '',
     };
     onChange({ ...producto, subproductos: [...producto.subproductos, nuevoSubProducto] });
+  
   };
 
   const actualizarSubProducto = (subproductoActualizado: SubProducto) => {
@@ -87,16 +88,18 @@ const GestorProductos: React.FC = () => {
   const agregarProducto = () => {
     const nuevoProducto: Producto = {
       id: Date.now(),
-      nombre: '',
+      nombre: 'asdf',
       subproductos: [],
     };
     setProductos((prevProductos) => [...prevProductos, nuevoProducto]);
   };
 
+  {/** tomar encuentra esto que sirve para actualizarcualquier atributo y se refleje en el front */}
   const actualizarProducto = (productoActualizado: Producto) => {
     const productosActualizados = productos.map((p) =>
       p.id === productoActualizado.id ? productoActualizado : p
     );
+    console.log("update nombre")
     setProductos(productosActualizados);
   };
 
