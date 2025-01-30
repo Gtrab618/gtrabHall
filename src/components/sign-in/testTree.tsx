@@ -22,16 +22,16 @@ import { Items } from '../models/other/items';
 import { withholding } from '../models/other/withholding';
 import { CodeStandard } from '../models/other/codeStandard';
 
-interface itemsProps{
-  
-  itemProp:Items;
+interface itemsProps {
+
+  itemProp: Items;
   onChange: (itemTest: Items) => void;
 
 
 }
 
 
-function Row(props:itemsProps) {
+function Row(props: itemsProps) {
 
   const [unidades, setUnidades] = React.useState<Unidades[]>([
     { id: 1, code: "A1", name: "Unidad 1" },
@@ -40,11 +40,11 @@ function Row(props:itemsProps) {
   ]);
 
 
-  const [codeStandardList, setCodeStandardList] =React.useState<CodeStandard[]>([
-    {id:1,name:"Estándar de adopción del contribuyente"},
-    {id:2,name:"UNSPSC"},
-    {id:3,name:"Partida Arancelaria"},
-    {id:4, name:"GTIN"}
+  const [codeStandardList, setCodeStandardList] = React.useState<CodeStandard[]>([
+    { id: 1, name: "Estándar de adopción del contribuyente" },
+    { id: 2, name: "UNSPSC" },
+    { id: 3, name: "Partida Arancelaria" },
+    { id: 4, name: "GTIN" }
   ])
   {/* 
   const [unidad, setUnidad] = useState<Unidades>(new Unidades());
@@ -52,28 +52,37 @@ function Row(props:itemsProps) {
 
   const [unidad, setUnidad] = useState('');
 
-  const [codStandard,setCodStandard]= useState('')
-  
+  const [codStandard, setCodStandard] = useState('')
+
   const [open, setOpen] = React.useState(false);
 
-    const updateTest2=()=>{
-      const itemnew: withholding={
-        code:"asdf",
-        withholding_tax_rate:"asdf"
-      }
-      props.onChange({ ...props.itemProp,withholding_taxes:[...props.itemProp.withholding_taxes , itemnew] })
+  const updateTest2 = () => {
+    const itemnew: withholding = {
+      code: "asdf",
+      withholding_tax_rate: "1"
     }
+    props.onChange({ ...props.itemProp, withholding_taxes: [...props.itemProp.withholding_taxes, itemnew] })
+  }
 
   React.useEffect(() => {
     // Asignar la primera unidad al montar el componente
     if (unidades.length > 0) {
       setUnidad(unidades[0].id.toString());
     }
-    if(codStandard.length>0){
+    if (codStandard.length > 0) {
       setCodStandard(codeStandardList[0].id.toString())
     }
 
   }, []);
+
+  const updateSubItem = (subItemUpd: withholding, indexPass: number) => {
+
+    const subItemsUpdate = props.itemProp.withholding_taxes.map((sp, index) =>
+      index === indexPass ? subItemUpd : sp
+    );
+
+    props.onChange({ ...props.itemProp, withholding_taxes: subItemsUpdate })
+  }
 
   return (
     <React.Fragment>
@@ -101,9 +110,9 @@ function Row(props:itemsProps) {
           }} />
         </TableCell>
 
-         {/*item.*.name*/}
+        {/*item.*.name*/}
         <TableCell sx={{ minWidth: "100px", height: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.name} onChange={(e)=>props.onChange({...props.itemProp,name: e.target.value})} slotProps={{
+          <TextField variant="outlined" value={props.itemProp.name} onChange={(e) => props.onChange({ ...props.itemProp, name: e.target.value })} slotProps={{
             htmlInput: {
               maxLength: 10, // Aplicar máximo de caracteres al `<input>` subyacente
             },
@@ -112,9 +121,8 @@ function Row(props:itemsProps) {
 
         {/* item.*.quantity*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.quantity} onChange={(e)=>props.onChange({...props.itemProp,quantity: isNaN(parseInt(e.target.value)) ? 1: parseInt(e.target.value)})}
+          <TextField variant="outlined" value={props.itemProp.quantity} onChange={(e) => props.onChange({ ...props.itemProp, quantity: isNaN(parseInt(e.target.value)) ? 1 : parseInt(e.target.value) })}
             type="number"
-            defaultValue="1"
             slotProps={{
               htmlInput: {
                 min: 1,
@@ -126,9 +134,8 @@ function Row(props:itemsProps) {
 
         {/* item.*.discount_rate*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.discount_rate} onChange={(e)=>props.onChange({...props.itemProp, discount_rate:  isNaN(parseInt(e.target.value)) ? 0: parseInt(e.target.value)})}
+          <TextField variant="outlined" value={props.itemProp.discount_rate} onChange={(e) => props.onChange({ ...props.itemProp, discount_rate: isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value) })}
             type="number"
-            defaultValue="1"
             slotProps={{
               htmlInput: {
                 min: 0,
@@ -140,9 +147,8 @@ function Row(props:itemsProps) {
 
         {/* item.*.tax_rate*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.tax_rate} onChange={(e)=>props.onChange({...props.itemProp,tax_rate: isNaN(parseInt(e.target.value)) ? "0" : e.target.value })}
+          <TextField variant="outlined" value={props.itemProp.tax_rate} onChange={(e) => props.onChange({ ...props.itemProp, tax_rate: isNaN(parseInt(e.target.value)) ? "0" : e.target.value })}
             type="number"
-            defaultValue="1"
             slotProps={{
               htmlInput: {
                 min: 0,
@@ -154,7 +160,7 @@ function Row(props:itemsProps) {
 
         {/* item.*.price*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.price} onChange={(e)=> props.onChange({...props.itemProp,price : isNaN (parseInt(e.target.value)) ? 1 : parseInt(e.target.value) })}
+          <TextField variant="outlined" value={props.itemProp.price} onChange={(e) => props.onChange({ ...props.itemProp, price: isNaN(parseInt(e.target.value)) ? 1 : parseInt(e.target.value) })}
             type="number"
             slotProps={{
               htmlInput: {
@@ -206,7 +212,7 @@ function Row(props:itemsProps) {
 
         {/*items.*.is_excluded*/}
         <TableCell>
-          <Switch checked={props.itemProp.is_excluded === 1} onChange={(e)=> props.onChange({...props.itemProp, is_excluded : event.target.checked ? 1 : 0 })}/>
+          <Switch checked={props.itemProp.is_excluded === 1} onChange={(e) => props.onChange({ ...props.itemProp, is_excluded: event.target.checked ? 1 : 0 })} />
         </TableCell>
 
 
@@ -235,12 +241,20 @@ function Row(props:itemsProps) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
-                Retenciones
               </Typography>
-              <IconButton color="primary" aria-label="add to shopping cart" onClick={() => updateTest2()}>
-                <AddCircleOutlineSharpIcon />
-              </IconButton>
+
               <Table size="small" aria-label="purchases">
+
+
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Retenciones</TableCell>
+                    <TableCell>    <IconButton color="primary" aria-label="add to shopping cart" onClick={() => updateTest2()}>
+                      <AddCircleOutlineSharpIcon />
+                    </IconButton></TableCell>
+
+                  </TableRow>
+                </TableHead>
                 <TableHead>
                   <TableRow>
                     <TableCell>Código Retención</TableCell>
@@ -248,13 +262,28 @@ function Row(props:itemsProps) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {props.itemProp.withholding_taxes?.map((holding,index) => (
+                  {props.itemProp.withholding_taxes?.map((holding, index) => (
                     <TableRow key={index}>
-
-                      <TableCell component="th" scope="row">
-                        {holding.code}
+                      <TableCell >
+                        <TextField variant="outlined" value={holding.code} onChange={(e) => updateSubItem({ ...holding, code: e.target.value }, index)} slotProps={{
+                          htmlInput: {
+                            maxLength: 10, // Aplicar máximo de caracteres al `<input>` subyacente
+                          },
+                        }} />
                       </TableCell>
-                      <TableCell>{holding.withholding_tax_rate}</TableCell>
+                      <TableCell>
+                        <TextField variant="outlined" value={holding.withholding_tax_rate} onChange={(e) => updateSubItem({ ...holding, withholding_tax_rate: e.target.value }, index)}
+                          type="number"
+                          slotProps={{
+                            htmlInput: {
+                              min: 1,
+                              max: 100, // Aplicar máximo de caracteres al `<input>` subyacente
+
+                            },
+                          }}
+                        />
+
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -274,7 +303,7 @@ export default function CollapsibleTable() {
   const addItem = () => {
 
     const newItem = new Items(); // Crear una nueva instancia de `Items`
-    newItem.code_reference ="prod"+items.length; // Asignar valores a las propiedades según sea necesario
+    newItem.code_reference = "prod" + items.length; // Asignar valores a las propiedades según sea necesario
     newItem.name = "Producto 1";
     newItem.quantity = 10;
     newItem.price = 100;
@@ -286,14 +315,16 @@ export default function CollapsibleTable() {
     setItems((prevItems) => [...prevItems, newItem])
   }
 
-  const updateSubItems = (itemUpdate:Items)=>{
- 
-    const itemsActualizados= items.map((p)=>
-    p.code_reference === itemUpdate.code_reference ? itemUpdate : p
+  const updateItems = (itemUpdate: Items) => {
+
+    const itemsActualizados = items.map((p) =>
+      p.code_reference === itemUpdate.code_reference ? itemUpdate : p
     );
     setItems(itemsActualizados)
-   
-  } 
+
+  }
+
+
 
   return (
     <TableContainer component={Paper}>
@@ -319,7 +350,7 @@ export default function CollapsibleTable() {
         </TableHead>
         <TableBody>
           {items?.map((itemTable, index) => (
-            <Row key={index} onChange={updateSubItems} itemProp={itemTable} />
+            <Row key={index} onChange={updateItems} itemProp={itemTable} />
           ))}
         </TableBody>
       </Table>
