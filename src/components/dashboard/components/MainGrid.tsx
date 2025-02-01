@@ -140,9 +140,9 @@ export default function MainGrid() {
 
   }
 
-  const recoverData = () => {
+  const recoverData = (date :dayjs.Dayjs | null) => {
 
-    console.log(items)
+    console.log(date, "date recibido")
   }
 
   return (
@@ -244,7 +244,7 @@ export default function MainGrid() {
           <div >
             <Grid container >
               <Grid size={{ xs: 6, sm: 4, md: 3 }}>
-                <CustomDatePicker text={"Fecha de inicio"}/>
+                <CustomDatePicker title='Fecha de inicio' getDate={recoverData}/>
               </Grid>
 
               <Grid size={{ xs: 6, sm: 4, md: 3 }} >
@@ -261,8 +261,9 @@ export default function MainGrid() {
               </Grid>
 
               <Grid size={{ xs: 6, sm: 4, md: 3 }}>
-                <CustomDatePicker text={"Fecha de fin"} />
+                <CustomDatePicker title='Fecha de fin' getDate={recoverData}/>
               </Grid>
+  
 
 
               <Grid size={{ xs: 6, sm: 4, md: 3 }} >
@@ -428,7 +429,7 @@ export default function MainGrid() {
           marginTop: "20px"
         }}
       >
-        <Button variant="contained" color="success" onClick={recoverData}>
+        <Button variant="contained" color="success" >
           Generar Factura
         </Button>
       </Box>
@@ -732,6 +733,3 @@ interface itemsProps {
 
 }
 
-interface dateFactu{
-  
-}

@@ -12,6 +12,7 @@ import {
   FieldSection,
 } from '@mui/x-date-pickers/models';
 import { Typography } from '@mui/material';
+import { dateFactu } from '../../models/other/interfaceOther';
 
 interface ButtonFieldProps
   extends UseDateFieldProps<Dayjs, false>,
@@ -52,23 +53,24 @@ function ButtonField(props: ButtonFieldProps) {
   );
 }
 
-export default function CustomDatePicker({text}:{text:string}) {
+export default function CustomDatePicker(props:dateFactu) {
   const [value, setValue] = React.useState<Dayjs | null>(dayjs());
   const [open, setOpen] = React.useState(false);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} >
-      <Typography marginLeft={"10px"} >{text}</Typography>
+      <Typography marginLeft={"10px"} >{props.title}</Typography>
       <DatePicker
         value={value}
         label={value == null ? null : value.format('MMM DD, YYYY')}
-        onChange={(newValue) => setValue(newValue)}
+        onChange={(newValue) =>{setValue(newValue); props.getDate(newValue)}}
         slots={{ field: ButtonField }}
         slotProps={{
           field: { setOpen } as any,
           nextIconButton: { size: 'small' },
           previousIconButton: { size: 'small' },
         }}
+        minDate={dayjs()}
         open={open}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
