@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
-import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel, TextField, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Collapse, Switch } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel, TextField, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Collapse, Switch, Button } from '@mui/material';
 import { getMunicipios, getRanges, getTributes, getUnidades } from '../../../services/PayloadFacService';
 import { useEffect, useState } from 'react';
 import { Ranges } from '../../models/other/ranges';
@@ -109,6 +109,13 @@ export default function MainGrid() {
 
   const [numberPhone, setNumberPhone] = useState(0);
 
+  {/* validation data generar factura */ }
+  const [numberId, setNumberId] = useState("")
+  const [namePer,setNamePer]=useState("")
+  const [gmail,setGmail]=useState("")
+  const [addres,setAddres]=useState("")
+
+
   const addItem = () => {
 
     const newItem = new Items(); // Crear una nueva instancia de `Items`
@@ -132,6 +139,12 @@ export default function MainGrid() {
     setItems(itemsActualizados)
 
   }
+
+  const recoverData = () => {
+
+    console.log(items)
+  }
+
   return (
 
 
@@ -231,7 +244,7 @@ export default function MainGrid() {
           <div >
             <Grid container >
               <Grid size={{ xs: 6, sm: 4, md: 3 }}>
-                <CustomDatePicker text={"Fecha de inicio"} />
+                <CustomDatePicker text={"Fecha de inicio"}/>
               </Grid>
 
               <Grid size={{ xs: 6, sm: 4, md: 3 }} >
@@ -241,7 +254,7 @@ export default function MainGrid() {
                       marginTop: "18px"
                     }}
                     label="Hora de inicio"
-                    defaultValue={dayjs('2022-04-17T15:30')}
+                    defaultValue={dayjs()}
                     format="HH:mm:ss"
                   />
                 </LocalizationProvider>
@@ -259,7 +272,7 @@ export default function MainGrid() {
                       marginTop: "18px"
                     }}
                     label="Hora de fin"
-                    defaultValue={dayjs('2022-04-17T15:30')}
+                    defaultValue={dayjs()}
                     format="HH:mm:ss"
                   />
                 </LocalizationProvider>
@@ -309,9 +322,12 @@ export default function MainGrid() {
           <Grid size={{ xs: 6, sm: 4, md: 3 }} >
             <TextField sx={{
               top: "6px"
-            }} id="outlined-basic" label="Número documento" variant="outlined" slotProps={{
+            }} 
+              value={numberId}
+              onChange={e => setNumberId(e.target.value)}
+              id="outlined-basic" label="Número documento" variant="outlined" slotProps={{
               htmlInput: {
-                maxLength: 15, // Aplicar máximo de caracteres al `<input>` subyacente
+                maxLength: 12, // Aplicar máximo de caracteres al `<input>` subyacente
               },
             }} />
           </Grid>
@@ -321,7 +337,7 @@ export default function MainGrid() {
               top: "6px"
             }} label="Nombre" variant="outlined" slotProps={{
               htmlInput: {
-                maxLength: 30, // Aplicar máximo de caracteres al `<input>` subyacente
+                maxLength: 35, // Aplicar máximo de caracteres al `<input>` subyacente
               },
             }} />
           </Grid>
@@ -329,7 +345,7 @@ export default function MainGrid() {
           <Grid size={{ xs: 6, sm: 4, md: 3 }} >
             <TextField sx={{
               top: "6px"
-            }} label="Empresa" variant="outlined" slotProps={{
+            }} label="Empresa" variant="outlined" defaultValue={"Gtrab618"} slotProps={{
               htmlInput: {
                 maxLength: 30, // Aplicar máximo de caracteres al `<input>` subyacente
               },
@@ -364,6 +380,7 @@ export default function MainGrid() {
               valueIsNumericString
               variant="standard"
               label="Teléfono"
+              helperText="opcional"
             />
           </Grid>
         </Grid>
@@ -404,6 +421,17 @@ export default function MainGrid() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: "20px"
+        }}
+      >
+        <Button variant="contained" color="success" onClick={recoverData}>
+          Generar Factura
+        </Button>
+      </Box>
 
 
     </Box>
@@ -413,10 +441,10 @@ export default function MainGrid() {
 
 function Row(props: itemsProps) {
 
-  const [totalPrice,setTotalPrice]= useState(0)
-  
+  const [totalPrice, setTotalPrice] = useState(0)
 
-  const [updateTotal,setUpdateTotal]= useState(false)
+
+  const [updateTotal, setUpdateTotal] = useState(false)
 
   const [codeStandardList, setCodeStandardList] = React.useState<CodeStandard[]>([
     { id: 1, name: "Estándar de adopción del contribuyente" },
@@ -424,35 +452,35 @@ function Row(props: itemsProps) {
     { id: 3, name: "Partida Arancelaria" },
     { id: 4, name: "GTIN" }
   ])
- 
 
-  
+
+
 
   const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
-    const discountPrice=props.itemProp.price-(props.itemProp.price*(props.itemProp.discount_rate/100))
-    
-    setTotalPrice((discountPrice+(discountPrice*parseInt(props.itemProp.tax_rate)/100))*props.itemProp.quantity)
+    const discountPrice = props.itemProp.price - (props.itemProp.price * (props.itemProp.discount_rate / 100))
 
-  
+    setTotalPrice((discountPrice + (discountPrice * parseInt(props.itemProp.tax_rate) / 100)) * props.itemProp.quantity)
+
+
   }, [updateTotal])
 
   useEffect(() => {
-    const discountPrice=props.itemProp.price-(props.itemProp.price*(props.itemProp.discount_rate/100))
-    
-    setTotalPrice((discountPrice+(discountPrice*parseInt(props.itemProp.tax_rate)/100))*props.itemProp.quantity)
+    const discountPrice = props.itemProp.price - (props.itemProp.price * (props.itemProp.discount_rate / 100))
+
+    setTotalPrice((discountPrice + (discountPrice * parseInt(props.itemProp.tax_rate) / 100)) * props.itemProp.quantity)
 
   }, [])
 
 
 
   const updateTest2 = () => {
-    const itemnew: withholding = {
+    const subItemnew: withholding = {
       code: "1",
       withholding_tax_rate: "1"
     }
-    props.onChange({ ...props.itemProp, withholding_taxes: [...props.itemProp.withholding_taxes, itemnew] })
+    props.onChange({ ...props.itemProp, withholding_taxes: [...props.itemProp.withholding_taxes, subItemnew] })
   }
 
 
@@ -502,7 +530,7 @@ function Row(props: itemsProps) {
 
         {/* item.*.quantity*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.quantity} onChange={(e) => {props.onChange({ ...props.itemProp, quantity: isNaN(parseInt(e.target.value)) ? 1 : parseInt(e.target.value) }); setUpdateTotal(!updateTotal) ; }}
+          <TextField variant="outlined" value={props.itemProp.quantity} onChange={(e) => { props.onChange({ ...props.itemProp, quantity: isNaN(parseInt(e.target.value)) ? 1 : parseInt(e.target.value) }); setUpdateTotal(!updateTotal); }}
             type="number"
             slotProps={{
               htmlInput: {
@@ -515,7 +543,7 @@ function Row(props: itemsProps) {
 
         {/* item.*.discount_rate*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.discount_rate} onChange={(e) => {props.onChange({ ...props.itemProp, discount_rate: isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value) }); setUpdateTotal(!updateTotal)}}
+          <TextField variant="outlined" value={props.itemProp.discount_rate} onChange={(e) => { props.onChange({ ...props.itemProp, discount_rate: isNaN(parseInt(e.target.value)) ? 0 : parseInt(e.target.value) }); setUpdateTotal(!updateTotal) }}
             type="number"
             slotProps={{
               htmlInput: {
@@ -528,7 +556,7 @@ function Row(props: itemsProps) {
 
         {/* item.*.tax_rate*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.tax_rate} onChange={(e) =>{ props.onChange({ ...props.itemProp, tax_rate: isNaN(parseInt(e.target.value)) ? "0" : e.target.value }); setUpdateTotal(!updateTotal)}}
+          <TextField variant="outlined" value={props.itemProp.tax_rate} onChange={(e) => { props.onChange({ ...props.itemProp, tax_rate: isNaN(parseInt(e.target.value)) ? "0" : e.target.value }); setUpdateTotal(!updateTotal) }}
             type="number"
             slotProps={{
               htmlInput: {
@@ -541,7 +569,7 @@ function Row(props: itemsProps) {
 
         {/* item.*.price*/}
         <TableCell sx={{ minWidth: "100px" }}>
-          <TextField variant="outlined" value={props.itemProp.price} onChange={(e) => {props.onChange({ ...props.itemProp, price: isNaN(parseInt(e.target.value)) ? 1 : parseInt(e.target.value) }); setUpdateTotal(!updateTotal)}}
+          <TextField variant="outlined" value={props.itemProp.price} onChange={(e) => { props.onChange({ ...props.itemProp, price: isNaN(parseInt(e.target.value)) ? 1 : parseInt(e.target.value) }); setUpdateTotal(!updateTotal) }}
             type="number"
             slotProps={{
               htmlInput: {
@@ -655,7 +683,7 @@ function Row(props: itemsProps) {
                         <Select
                           value={holding.code}
                           displayEmpty
-                          onChange={(e) => updateSubItem({ ...holding, code: e.target.value }, index)}
+                          onChange={(e) => updateSubItem({ ...holding, code: String(e.target.value) }, index)}
                           labelId="demo-simple-select-filled-label"
                           id="demo-simple-select-filled"
                           sx={{
@@ -702,4 +730,8 @@ interface itemsProps {
   unidadesRow: Unidades[]
   tributosRow: Tributes[]
 
+}
+
+interface dateFactu{
+  
 }
