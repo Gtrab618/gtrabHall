@@ -58,7 +58,7 @@ function Row(props: itemsProps) {
 
   const updateTest2 = () => {
     const itemnew: withholding = {
-      code: "asdf",
+      code: "1",
       withholding_tax_rate: "1"
     }
     props.onChange({ ...props.itemProp, withholding_taxes: [...props.itemProp.withholding_taxes, itemnew] })
@@ -265,12 +265,26 @@ function Row(props: itemsProps) {
                   {props.itemProp.withholding_taxes?.map((holding, index) => (
                     <TableRow key={index}>
                       <TableCell >
-                        <TextField variant="outlined" value={holding.code} onChange={(e) => updateSubItem({ ...holding, code: e.target.value }, index)} slotProps={{
-                          htmlInput: {
-                            maxLength: 10, // Aplicar máximo de caracteres al `<input>` subyacente
-                          },
-                        }} />
+                     
+
+                        <Select
+                          value={holding.code}
+                          displayEmpty
+                          onChange={(e) => updateSubItem({ ...holding, code: e.target.value }, index)}
+                          labelId="demo-simple-select-filled-label"
+                          id="demo-simple-select-filled"
+                          sx={{
+                            height: "35px"
+                          }}
+                        >
+                          {codeStandardList?.map((item, index) => (
+                            <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                          ))}
+
+                        </Select>
                       </TableCell>
+
+
                       <TableCell>
                         <TextField variant="outlined" value={holding.withholding_tax_rate} onChange={(e) => updateSubItem({ ...holding, withholding_tax_rate: e.target.value }, index)}
                           type="number"
@@ -308,8 +322,8 @@ export default function CollapsibleTable() {
     newItem.quantity = 10;
     newItem.price = 100;
     newItem.withholding_taxes = [
-      { code: "Tax1", withholding_tax_rate: "5" }, // Ejemplo de datos para withholding_taxes
-      { code: "Tax2", withholding_tax_rate: "10" },
+      { code: "1", withholding_tax_rate: "5" }, // Ejemplo de datos para withholding_taxes
+      { code: "2", withholding_tax_rate: "10" },
     ];
 
     setItems((prevItems) => [...prevItems, newItem])
