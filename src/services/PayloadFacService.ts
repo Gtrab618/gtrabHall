@@ -5,6 +5,8 @@ import axios from "axios";
 import { Tributes } from "../components/models/other/tributes";
 import { Municipios } from "../components/models/other/municipios";
 import { Unidades } from "../components/models/other/unidades";
+import { Factura } from "../components/models/other/factura";
+import { ThirtyFpsRounded } from "@mui/icons-material";
 
 export function getTokenCookie() {
     const token =Cookies.get('authToken')
@@ -79,4 +81,16 @@ export const getUnidades = async ():Promise<Unidades[]>=>{
         deleteTokenCookie(err)
         return []
     }
+}
+
+export const saveFacura = async(factu:Factura) =>{
+    const token =getTokenCookie()
+
+    try {
+
+    }catch(err){
+
+    }
+
+
 }

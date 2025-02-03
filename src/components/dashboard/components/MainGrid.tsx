@@ -2,7 +2,7 @@ import Grid from '@mui/material/Grid2';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
-import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel, TextField, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Collapse, Switch, Button } from '@mui/material';
+import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel, TextField, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Collapse, Switch, Button, Snackbar, Alert, SnackbarCloseReason } from '@mui/material';
 import { getMunicipios, getRanges, getTributes, getUnidades } from '../../../services/PayloadFacService';
 import { useEffect, useState } from 'react';
 import { Ranges } from '../../models/other/ranges';
@@ -21,6 +21,30 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { withholding } from '../../models/other/withholding';
 import { CodeStandard } from '../../models/other/codeStandard';
+import { Factura } from '../../models/other/factura';
+
+const listPayForm = [
+  { text: 'Pago al contado', id: '1' },
+  { text: 'Pago a crédito', id: '2' }
+];
+
+const listLegalOrganization = [
+  { text: 'Persona jurídica', id: '1' },
+  { text: 'Persona Natural', id: '2' }
+]
+
+const listMethodPay = [
+  { text: 'Efectivo', id: '10' },
+  { text: 'Consignación', id: '42' },
+  { text: 'Cheque', id: '20' },
+  { text: 'Trasferencia', id: '47' },
+  { text: 'Bonos', id: '71' },
+  { text: 'Vales', id: '72' },
+  { text: 'Medio de pago no definido', id: '1' },
+  { text: 'Tarjeta de Débito', id: '49' },
+  { text: 'Tarjeta de Crédito', id: '48' },
+  { text: 'Otro*', id: 'ZZZ' }
+];
 
 const listIdentity = [
   { text: 'Registro civil', id: '1' },
@@ -35,22 +59,41 @@ const listIdentity = [
   { text: 'NIT otro país', id: '10' },
   { text: 'NUIP*', id: '11' },
 ];
-
 export default function MainGrid() {
   const [ranges, setRanges] = useState<Ranges[]>([]);
   const [tributes, setTributes] = useState<Tributes[]>([]);
   const [municipios, setMunicipios] = useState<Municipios[]>([]);
   const [unidades, setUnidades] = useState<Unidades[]>([])
 
+  const [referenceCode, setReferenceCode] = useState('');
+  const [observation, setObservation] = useState('');
+  const [payForm, setPayForm] = useState('1');
+  const [methodPay, setMethodPay] = useState('10');
 
   const [rage, setRange] = useState('');
   const [tribute, setTribute] = useState('');
   const [municipio, setMunicipio] = useState('');
   const [unidad, setUnidad] = useState('');
-  const [document, setDocument] = useState('');
 
+  const [initDate, setInitDate] = useState<dayjs.Dayjs | null>(null);
+  const [finalDate, setFinalDate] = useState<dayjs.Dayjs | null>(null);
+  const [datePay, setDatePay] = useState<dayjs.Dayjs | null>(null);
+  const [initTime, setInitTime] = useState(dayjs());
+  const [finalTime, setFinalTime] = useState(dayjs());
+
+  {/* validation data generar factura */ }
+  const [document, setDocument] = useState('1');
+  const [numberId, setNumberId] = useState("124151")
+  const [namePer, setNamePer] = useState("Gonalez Pepe Ramon")
+  const [empresa, setEmpresa] = useState("Gtrab618")
+  const [gmail, setGmail] = useState("elpepe@gmail.com")
+  const [addres, setAddres] = useState("Calle San vicente 1")
+  const [numberPhone, setNumberPhone] = useState("01065321");
+  const [legalOrganization, setLegalOrganization] = useState("1");
 
   const [items, setItems] = useState<Items[]>([])
+  const [message, setMessage] = useState("");
+
 
   useEffect(() => {
     getRanges().then(data => {
@@ -107,21 +150,14 @@ export default function MainGrid() {
 
   const [peFactu, setPefactu] = useState(false);
 
-  const [numberPhone, setNumberPhone] = useState(0);
-
-  {/* validation data generar factura */ }
-  const [numberId, setNumberId] = useState("")
-  const [namePer,setNamePer]=useState("")
-  const [gmail,setGmail]=useState("")
-  const [addres,setAddres]=useState("")
-
+  const [open, setOpen] = React.useState(false);
 
   const addItem = () => {
 
     const newItem = new Items(); // Crear una nueva instancia de `Items`
     newItem.code_reference = "prod" + items.length; // Asignar valores a las propiedades según sea necesario
     newItem.name = "";
-    newItem.tribute_id = 1;
+    newItem.tribute_id = "1";
     newItem.standard_code_id = 1;
     newItem.quantity = 1;
     newItem.price = 1;
@@ -140,9 +176,79 @@ export default function MainGrid() {
 
   }
 
-  const recoverData = (date :dayjs.Dayjs | null) => {
+  const recoverInitDate = (date: dayjs.Dayjs | null) => {
+    setInitDate(date)
 
-    console.log(date, "date recibido")
+  }
+
+  const recoverFinalDate = (date: dayjs.Dayjs | null) => {
+
+    setFinalDate(date)
+  }
+
+  const recoverDatePay = (date: dayjs.Dayjs | null) => {
+    setDatePay(date)
+  }
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  const revisionFactura = () => {
+    const factura: Factura = new Factura();
+
+    factura.observation = observation
+    factura.numbering_range_id = parseInt(rage)
+    factura.reference_code = referenceCode
+    if (payForm === "2") {
+      factura.payment_due_date = datePay?.format("YYYY-MM-DD") ?? dayjs().format("YYYY-MM-DD")
+    }
+
+    if (peFactu) {
+      if (initDate === null) {
+        setInitDate(dayjs())
+      }
+      if (finalDate === null) {
+        setFinalDate(dayjs())
+      }
+      if (initDate?.isBefore(finalDate)) {
+
+        factura.billing_period.start_date = initDate?.format("YYYY-MM-DD")
+        factura.billing_period.start_time= initTime.format("HH:mm:ss")
+        factura.billing_period.end_time= finalTime.format("HH:mm:ss")
+        factura.billing_period.end_date = finalDate?.format("YYYY-MM-DD") ?? ""
+
+      } else {
+        setMessage("PERÍODO FACTURACIÓN: La fecha final tiene que ser mayor")
+        setOpen(true)
+        return
+      }
+
+    }
+
+
+    factura.customer.identification = numberId
+    factura.customer.company = empresa
+    factura.customer.trade_name = ""
+    factura.customer.names = namePer
+    factura.customer.address = addres
+    factura.customer.email = gmail
+    factura.customer.phone = numberPhone
+    factura.customer.legal_organization_id=legalOrganization
+    factura.customer.tribute_id=tribute
+    factura.customer.identification_document_id=document
+    factura.customer.municipality_id=municipio
+
+    factura.items=items
+
+    console.log(factura)
   }
 
   return (
@@ -150,11 +256,113 @@ export default function MainGrid() {
 
 
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert
+          onClose={handleClose}
+          severity="warning"
+          variant="filled"
+          sx={{ width: '100%' }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
 
       <Typography component="h2" variant="h6">
         Crear factura
       </Typography>
 
+      <Typography component="p">
+        Datos Pago
+      </Typography>
+
+      <div>
+
+        <Grid container spacing={2}>
+
+
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+
+            <TextField
+              id="filled-multiline-static"
+              label="Descripción"
+              multiline
+              rows={4}
+              variant="standard"
+              helperText="opcional"
+              onChange={e => setObservation(e.target.value)}
+              slotProps={{
+                htmlInput: {
+                  maxLength: 250, // Aplicar máximo de caracteres al `<input>` subyacente
+                },
+              }}
+            />
+
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <TextField variant="outlined" value={referenceCode} label="Códido Referencia" onChange={e => setReferenceCode(e.target.value)} slotProps={{
+              htmlInput: {
+                maxLength: 15, // Aplicar máximo de caracteres al `<input>` subyacente
+              },
+            }} />
+          </Grid>
+
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Forma de pago</InputLabel>
+              <Select
+                value={payForm}
+                displayEmpty
+                onChange={e => setPayForm(e.target.value)}
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                sx={{
+                  height: "35px"
+                }}
+              >
+                {listPayForm?.map((item, index) => (
+                  <MenuItem key={index} value={item.id}>{item.text}</MenuItem>
+                ))}
+
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {payForm === "2" && (
+            <Grid size={{ xs: 6, sm: 4, md: 3 }}>
+              <CustomDatePicker title="Fecha vencimiento" getDate={recoverDatePay} />
+            </Grid>
+          )}
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Método Pago</InputLabel>
+              <Select
+                value={methodPay}
+                displayEmpty
+                onChange={e => setMethodPay(e.target.value)}
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                sx={{
+                  height: "35px"
+                }}
+              >
+                {listMethodPay?.map((item, index) => (
+                  <MenuItem key={index} value={item.id}>{item.text}</MenuItem>
+                ))}
+
+              </Select>
+            </FormControl>
+          </Grid>
+
+        </Grid>
+
+
+      </div>
+
+
+      <Divider sx={{ margin: '20px 0' }} />
       <Typography component="p">
         Datos factura
       </Typography>
@@ -184,7 +392,7 @@ export default function MainGrid() {
           <Select
             value={tribute}
             displayEmpty
-            onChange={e => setTribute(e.target.value)}
+            onChange={e => setTribute(String(e.target.value))}
             labelId="demo-simple-select-filled-label"
             id="demo-simple-select-filled"
             sx={{
@@ -203,7 +411,7 @@ export default function MainGrid() {
           <Select
             value={municipio}
             displayEmpty
-            onChange={e => setMunicipio(e.target.value)}
+            onChange={e => setMunicipio(String(e.target.value))}
             labelId="demo-simple-select-filled-label"
             id="demo-simple-select-filled"
             sx={{
@@ -244,36 +452,36 @@ export default function MainGrid() {
           <div >
             <Grid container >
               <Grid size={{ xs: 6, sm: 4, md: 3 }}>
-                <CustomDatePicker title='Fecha de inicio' getDate={recoverData}/>
+                <CustomDatePicker title='Fecha de inicio' getDate={recoverInitDate} />
               </Grid>
 
               <Grid size={{ xs: 6, sm: 4, md: 3 }} >
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <TimeField
+                  <TimeField value={initTime}
+                    onChange={e=>setInitTime(e ?? dayjs()) }
                     sx={{
                       marginTop: "18px"
                     }}
                     label="Hora de inicio"
-                    defaultValue={dayjs()}
                     format="HH:mm:ss"
                   />
                 </LocalizationProvider>
               </Grid>
 
               <Grid size={{ xs: 6, sm: 4, md: 3 }}>
-                <CustomDatePicker title='Fecha de fin' getDate={recoverData}/>
+                <CustomDatePicker title='Fecha de final' getDate={recoverFinalDate} />
               </Grid>
-  
+
 
 
               <Grid size={{ xs: 6, sm: 4, md: 3 }} >
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <TimeField
+                  <TimeField value={finalTime}
+                    onChange={e=>setFinalTime(e ?? dayjs()) }
                     sx={{
                       marginTop: "18px"
                     }}
                     label="Hora de fin"
-                    defaultValue={dayjs()}
                     format="HH:mm:ss"
                   />
                 </LocalizationProvider>
@@ -320,21 +528,44 @@ export default function MainGrid() {
 
           </Grid>
 
-          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
-            <TextField sx={{
-              top: "6px"
-            }} 
-              value={numberId}
-              onChange={e => setNumberId(e.target.value)}
-              id="outlined-basic" label="Número documento" variant="outlined" slotProps={{
-              htmlInput: {
-                maxLength: 12, // Aplicar máximo de caracteres al `<input>` subyacente
-              },
-            }} />
+          <Grid size={{ xs: 6, sm: 4, md: 3 }}>
+
+            <FormControl variant="filled" sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-filled-label" sx={{ marginTop: "-5px" }}>Identidad</InputLabel>
+              <Select
+                value={legalOrganization}
+                displayEmpty
+                onChange={e => setLegalOrganization(e.target.value)}
+                labelId="demo-simple-select-filled-label"
+                id="demo-simple-select-filled"
+                sx={{
+                  height: "35px"
+                }}
+              >
+                {listLegalOrganization?.map((item, index) => (
+                  <MenuItem key={index} value={item.id}>{item.text}</MenuItem>
+                ))}
+
+              </Select>
+            </FormControl>
+
           </Grid>
 
           <Grid size={{ xs: 6, sm: 4, md: 3 }} >
             <TextField sx={{
+              top: "6px"
+            }}
+              value={numberId}
+              onChange={e => setNumberId(e.target.value)}
+              id="outlined-basic" label="Número documento" variant="outlined" slotProps={{
+                htmlInput: {
+                  maxLength: 12, // Aplicar máximo de caracteres al `<input>` subyacente
+                },
+              }} />
+          </Grid>
+
+          <Grid size={{ xs: 6, sm: 4, md: 3 }} >
+            <TextField value={namePer} onChange={e => setNamePer(e.target.value)} sx={{
               top: "6px"
             }} label="Nombre" variant="outlined" slotProps={{
               htmlInput: {
@@ -344,9 +575,9 @@ export default function MainGrid() {
           </Grid>
 
           <Grid size={{ xs: 6, sm: 4, md: 3 }} >
-            <TextField sx={{
+            <TextField value={empresa} onChange={e => setEmpresa(e.target.value)} sx={{
               top: "6px"
-            }} label="Empresa" variant="outlined" defaultValue={"Gtrab618"} slotProps={{
+            }} label="Empresa" variant="outlined" slotProps={{
               htmlInput: {
                 maxLength: 30, // Aplicar máximo de caracteres al `<input>` subyacente
               },
@@ -354,7 +585,7 @@ export default function MainGrid() {
           </Grid>
 
           <Grid size={{ xs: 6, sm: 4, md: 3 }} >
-            <TextField sx={{
+            <TextField value={gmail} onChange={e => setGmail(e.target.value)} sx={{
               top: "6px"
             }} label="Correo electrónico" variant="outlined" slotProps={{
               htmlInput: {
@@ -364,7 +595,7 @@ export default function MainGrid() {
           </Grid>
 
           <Grid size={{ xs: 6, sm: 4, md: 3 }} >
-            <TextField sx={{
+            <TextField value={addres} onChange={e => setAddres(e.target.value)} sx={{
               top: "6px"
             }} label="Dirección" variant="outlined" slotProps={{
               htmlInput: {
@@ -375,7 +606,7 @@ export default function MainGrid() {
 
           <Grid size={{ xs: 6, sm: 4, md: 3 }} >
             <NumericFormat
-
+              value={numberPhone}
               onChange={e => setNumberPhone(e.target.value)}
               customInput={TextField}
               valueIsNumericString
@@ -429,7 +660,7 @@ export default function MainGrid() {
           marginTop: "20px"
         }}
       >
-        <Button variant="contained" color="success" >
+        <Button variant="contained" color="success" onClick={revisionFactura}>
           Generar Factura
         </Button>
       </Box>
@@ -635,7 +866,7 @@ function Row(props: itemsProps) {
           <Select
             value={props.itemProp.tribute_id}
             displayEmpty
-            onChange={(e) => props.onChange({ ...props.itemProp, tribute_id: parseInt(e.target.value) })}
+            onChange={(e) => props.onChange({ ...props.itemProp, tribute_id: e.target.value })}
             labelId="demo-simple-select-filled-label"
             id="demo-simple-select-filled"
             sx={{
