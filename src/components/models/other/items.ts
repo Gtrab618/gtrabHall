@@ -10,7 +10,7 @@ export class Items{
     unit_measure_id:number=0;// id unidad medida
     standard_code_id:number=0;// codigos estandar precargados
     is_excluded:number=0;//boolean
-    tribute_id:string="1";// precargado tributos
+    tribute_id:number=1;// precargado tributos
     withholding_taxes:withholding[]=[]
 
 

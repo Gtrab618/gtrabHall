@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import AddCircleOutlineSharpIcon from '@mui/icons-material/AddCircleOutlineSharp';
 import { FormControl, InputLabel, Select, MenuItem, Divider, Checkbox, FormControlLabel, TextField, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Collapse, Switch, Button, Snackbar, Alert, SnackbarCloseReason } from '@mui/material';
-import { getMunicipios, getRanges, getTributes, getUnidades } from '../../../services/PayloadFacService';
+import { getMunicipios, getRanges, getTributes, getUnidades, saveFactura } from '../../../services/PayloadFacService';
 import { useEffect, useState } from 'react';
 import { Ranges } from '../../models/other/ranges';
 import { Tributes } from '../../models/other/tributes';
@@ -26,6 +26,11 @@ import { Factura } from '../../models/other/factura';
 const listPayForm = [
   { text: 'Pago al contado', id: '1' },
   { text: 'Pago a crédito', id: '2' }
+];
+
+const listTributosCli=[
+  { text: 'IVA', id: '18' },
+  { text: 'No aplica*', id: '21' }
 ];
 
 const listLegalOrganization = [
@@ -71,12 +76,12 @@ export default function MainGrid() {
   const [methodPay, setMethodPay] = useState('10');
 
   const [rage, setRange] = useState('');
-  const [tribute, setTribute] = useState('');
+  const [tribute, setTribute] = useState('18');
   const [municipio, setMunicipio] = useState('');
   const [unidad, setUnidad] = useState('');
 
-  const [initDate, setInitDate] = useState<dayjs.Dayjs | null>(null);
-  const [finalDate, setFinalDate] = useState<dayjs.Dayjs | null>(null);
+  const [initDate, setInitDate] = useState<dayjs.Dayjs | null>(dayjs());
+  const [finalDate, setFinalDate] = useState<dayjs.Dayjs | null>(dayjs().add(1, 'day'));
   const [datePay, setDatePay] = useState<dayjs.Dayjs | null>(null);
   const [initTime, setInitTime] = useState(dayjs());
   const [finalTime, setFinalTime] = useState(dayjs());
@@ -128,12 +133,6 @@ export default function MainGrid() {
   }, [ranges])
 
   useEffect(() => {
-    if (tributes.length > 0) {
-      setTribute(tributes[0].id.toString());
-    }
-  }, [tributes])
-
-  useEffect(() => {
     if (municipios.length > 0) {
       setMunicipio(municipios[0].id.toString());
     }
@@ -157,7 +156,7 @@ export default function MainGrid() {
     const newItem = new Items(); // Crear una nueva instancia de `Items`
     newItem.code_reference = "prod" + items.length; // Asignar valores a las propiedades según sea necesario
     newItem.name = "";
-    newItem.tribute_id = "1";
+    newItem.tribute_id = 1;
     newItem.standard_code_id = 1;
     newItem.quantity = 1;
     newItem.price = 1;
@@ -207,31 +206,26 @@ export default function MainGrid() {
     factura.observation = observation
     factura.numbering_range_id = parseInt(rage)
     factura.reference_code = referenceCode
+    factura.payment_form = payForm
     if (payForm === "2") {
       factura.payment_due_date = datePay?.format("YYYY-MM-DD") ?? dayjs().format("YYYY-MM-DD")
     }
 
-    if (peFactu) {
-      if (initDate === null) {
-        setInitDate(dayjs())
-      }
-      if (finalDate === null) {
-        setFinalDate(dayjs())
-      }
-      if (initDate?.isBefore(finalDate)) {
 
-        factura.billing_period.start_date = initDate?.format("YYYY-MM-DD")
-        factura.billing_period.start_time= initTime.format("HH:mm:ss")
-        factura.billing_period.end_time= finalTime.format("HH:mm:ss")
-        factura.billing_period.end_date = finalDate?.format("YYYY-MM-DD") ?? ""
+    if (initDate?.isBefore(finalDate) ) {
 
-      } else {
-        setMessage("PERÍODO FACTURACIÓN: La fecha final tiene que ser mayor")
-        setOpen(true)
-        return
-      }
+      factura.billing_period.start_date = initDate?.format("YYYY-MM-DD") ?? ""
+      factura.billing_period.start_time = initTime.format("HH:mm:ss")
+      factura.billing_period.end_time = finalTime.format("HH:mm:ss")
+      factura.billing_period.end_date = finalDate?.format("YYYY-MM-DD") ?? ""
 
+    } else {
+      setMessage("PERÍODO FACTURACIÓN: La fecha final tiene que ser mayor")
+      setOpen(true)
+      return
     }
+
+
 
 
     factura.customer.identification = numberId
@@ -241,14 +235,15 @@ export default function MainGrid() {
     factura.customer.address = addres
     factura.customer.email = gmail
     factura.customer.phone = numberPhone
-    factura.customer.legal_organization_id=legalOrganization
-    factura.customer.tribute_id=tribute
-    factura.customer.identification_document_id=document
-    factura.customer.municipality_id=municipio
+    factura.customer.legal_organization_id = legalOrganization
+    factura.customer.tribute_id = tribute
+    factura.customer.identification_document_id = document
+    factura.customer.municipality_id = municipio
 
-    factura.items=items
+    factura.items = items
 
     console.log(factura)
+    saveFactura(factura)
   }
 
   return (
@@ -392,15 +387,15 @@ export default function MainGrid() {
           <Select
             value={tribute}
             displayEmpty
-            onChange={e => setTribute(String(e.target.value))}
+            onChange={e => setTribute(e.target.value)}
             labelId="demo-simple-select-filled-label"
             id="demo-simple-select-filled"
             sx={{
               height: "35px"
             }}
           >
-            {tributes?.map((item, index) => (
-              <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+            {listTributosCli?.map((item, index) => (
+              <MenuItem key={index} value={item.id}>{item.text}</MenuItem>
             ))}
 
           </Select>
@@ -458,7 +453,7 @@ export default function MainGrid() {
               <Grid size={{ xs: 6, sm: 4, md: 3 }} >
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <TimeField value={initTime}
-                    onChange={e=>setInitTime(e ?? dayjs()) }
+                    onChange={e => setInitTime(e ?? dayjs())}
                     sx={{
                       marginTop: "18px"
                     }}
@@ -477,7 +472,7 @@ export default function MainGrid() {
               <Grid size={{ xs: 6, sm: 4, md: 3 }} >
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <TimeField value={finalTime}
-                    onChange={e=>setFinalTime(e ?? dayjs()) }
+                    onChange={e => setFinalTime(e ?? dayjs())}
                     sx={{
                       marginTop: "18px"
                     }}
@@ -709,7 +704,7 @@ function Row(props: itemsProps) {
 
   const updateTest2 = () => {
     const subItemnew: withholding = {
-      code: "1",
+      code: "01",
       withholding_tax_rate: "1"
     }
     props.onChange({ ...props.itemProp, withholding_taxes: [...props.itemProp.withholding_taxes, subItemnew] })
@@ -866,7 +861,7 @@ function Row(props: itemsProps) {
           <Select
             value={props.itemProp.tribute_id}
             displayEmpty
-            onChange={(e) => props.onChange({ ...props.itemProp, tribute_id: e.target.value })}
+            onChange={(e) => props.onChange({ ...props.itemProp, tribute_id: parseInt(e.target.value) })}
             labelId="demo-simple-select-filled-label"
             id="demo-simple-select-filled"
             sx={{
@@ -923,7 +918,7 @@ function Row(props: itemsProps) {
                           }}
                         >
                           {props.tributosRow.map((item, index) => (
-                            <MenuItem key={index} value={item.id}>{item.name}</MenuItem>
+                            <MenuItem key={index} value={item.code}>{item.name}</MenuItem>
                           ))}
 
                         </Select>
