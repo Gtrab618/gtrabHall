@@ -7,6 +7,7 @@ import { Municipios } from "../components/models/other/municipios";
 import { Unidades } from "../components/models/other/unidades";
 import { Factura } from "../components/models/other/factura";
 import { ThirtyFpsRounded } from "@mui/icons-material";
+import { RegisterOk } from "../components/models/savedFactura/registerOk";
 
 export function getTokenCookie() {
     const token = Cookies.get('authToken')
@@ -89,10 +90,9 @@ export const getUnidades = async (): Promise<Unidades[]> => {
 
 export const saveFactura = async (factu: Factura) => {
     const token = getTokenCookie()
-    console.log(JSON.stringify(factu, null, 2)); // Formato legible
-
+  
     try {
-        const response = await axios.post<any>(env.urlApi + '/v1/bills/validate', 
+        const response = await axios.post<RegisterOk>(env.urlApi + '/v1/bills/validate', 
             factu ,{
 
             headers: {
@@ -100,8 +100,8 @@ export const saveFactura = async (factu: Factura) => {
             }
         });
 
-        console.log(response.data)
-        return response.data
+      
+        return response
     } catch (err) {
         console.log(err)
         return null

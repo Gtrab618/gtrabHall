@@ -28,7 +28,7 @@ const listPayForm = [
   { text: 'Pago a crédito', id: '2' }
 ];
 
-const listTributosCli=[
+const listTributosCli = [
   { text: 'IVA', id: '18' },
   { text: 'No aplica*', id: '21' }
 ];
@@ -212,7 +212,7 @@ export default function MainGrid() {
     }
 
 
-    if (initDate?.isBefore(finalDate) ) {
+    if (initDate?.isBefore(finalDate)) {
 
       factura.billing_period.start_date = initDate?.format("YYYY-MM-DD") ?? ""
       factura.billing_period.start_time = initTime.format("HH:mm:ss")
@@ -242,8 +242,14 @@ export default function MainGrid() {
 
     factura.items = items
 
-    console.log(factura)
-    saveFactura(factura)
+
+
+    getRanges().then(data => {
+      setRanges(data)
+    })
+
+
+  
   }
 
   return (

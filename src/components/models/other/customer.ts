@@ -12,6 +12,5 @@ export class Customer{
     tribute_id:  string="";
     identification_document_id:  string="";
     municipality_id:  string="";
-
-
+    
 }
