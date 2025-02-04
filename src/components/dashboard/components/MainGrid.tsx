@@ -248,6 +248,21 @@ export default function MainGrid() {
       setRanges(data)
     })
 
+    saveFactura(factura).then (data =>{
+      
+      setMessage("Factura creada exitosamente")
+      setOpen(true)
+
+    }).catch(error=>{
+     
+      setMessage(error.response.data.message)
+      setOpen(true)
+      if(error.response.data.message==="Error de validación"){
+        console.log(error.response)
+        setMessage(message+ " ver consola falta algún dato")
+      }
+    })
+
 
   
   }

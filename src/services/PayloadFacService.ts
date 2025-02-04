@@ -88,24 +88,21 @@ export const getUnidades = async (): Promise<Unidades[]> => {
     }
 }
 
-export const saveFactura = async (factu: Factura) => {
+export const saveFactura = async (factu: Factura): Promise<any> => {
     const token = getTokenCookie()
-  
-    try {
-        const response = await axios.post<RegisterOk>(env.urlApi + '/v1/bills/validate', 
-            factu ,{
 
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
 
-      
-        return response
-    } catch (err) {
-        console.log(err)
-        return null
-    }
+    const response = await axios.post<RegisterOk>(env.urlApi + '/v1/bills/validate',
+        factu, {
+
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
+
+
+    return response
+
 
 
 }

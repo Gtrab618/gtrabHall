@@ -12,6 +12,7 @@ import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 import { useState } from 'react';
+import { swichInterface } from '../interfaces/swichInterface';
 
 const mainListItems = [
   { text: 'Crear Factura', icon: <NoteAddIcon/> },
@@ -28,7 +29,8 @@ const secondaryListItems = [
 
 
 
-export default function MenuContent() {
+export default function MenuContent(props:swichInterface) {
+  props.interfaceSelected("f")
   const [select, setSelected] = useState(0);
 
   return (

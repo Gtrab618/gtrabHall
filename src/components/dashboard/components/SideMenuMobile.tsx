@@ -10,13 +10,21 @@ import NotificationsRoundedIcon from '@mui/icons-material/NotificationsRounded';
 import MenuButton from './MenuButton';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
+import { swichInterface } from '../interfaces/swichInterface';
 
 interface SideMenuMobileProps {
   open: boolean | undefined;
   toggleDrawer: (newOpen: boolean) => () => void;
 }
 
-export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobileProps) {
+interface fussion extends swichInterface,SideMenuMobileProps{
+
+}
+
+
+export default function SideMenuMobile({ open, toggleDrawer, interfaceSelected }: fussion) {
+
+
   return (
     <Drawer
       anchor="right"
@@ -57,7 +65,7 @@ export default function SideMenuMobile({ open, toggleDrawer }: SideMenuMobilePro
         </Stack>
         <Divider />
         <Stack sx={{ flexGrow: 1 }}>
-          <MenuContent />
+          <MenuContent interfaceSelected={interfaceSelected}/>
           <Divider />
         </Stack>
         <CardAlert />

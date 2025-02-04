@@ -10,6 +10,7 @@ import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
 import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
+import { swichInterface } from '../interfaces/swichInterface';
 
 const drawerWidth = 240;
 
@@ -24,7 +25,10 @@ const Drawer = styled(MuiDrawer)({
   },
 });
 
-export default function SideMenu() {
+export default function SideMenu(props:swichInterface) {
+  
+
+
   return (
     <Drawer
       variant="permanent"
@@ -53,7 +57,7 @@ export default function SideMenu() {
           flexDirection: 'column',
         }}
       >
-        <MenuContent />
+        <MenuContent interfaceSelected={props.interfaceSelected} />
         <CardAlert />
       </Box>
       <Stack

@@ -26,11 +26,20 @@ const xThemeComponents = {
 };
 
 export default function Dashboard(props: { disableCustomTheme?: boolean }) {
+
+  const switchInterface=(interSwitch:string) =>{
+
+    console.log(interSwitch)
+  }
+
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: 'flex' }}>
-        <SideMenu />
+
+        {/* seleccionar interfaz  */}
+        <SideMenu interfaceSelected={switchInterface} />
+
         <AppNavbar />
         {/* Main content */}
         <Box
