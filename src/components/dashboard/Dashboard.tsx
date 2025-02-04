@@ -40,7 +40,7 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
         {/* seleccionar interfaz  */}
         <SideMenu interfaceSelected={switchInterface} />
 
-        <AppNavbar />
+        <AppNavbar interfaceSelected={switchInterface} />
         {/* Main content */}
         <Box
           component="main"
