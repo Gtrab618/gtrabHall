@@ -30,7 +30,7 @@ const secondaryListItems = [
 
 
 export default function MenuContent(props:swichInterface) {
-  props.interfaceSelected("f")
+
   const [select, setSelected] = useState(0);
 
   return (
@@ -38,7 +38,7 @@ export default function MenuContent(props:swichInterface) {
       <List dense>
         {mainListItems.map((item, index) => (
           <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton selected={index === select}  onClick={() => setSelected(index)}>
+            <ListItemButton selected={index === select}  onClick={() => {setSelected(index); props.interfaceSelected(item.text)}}>
               <ListItemIcon>{item.icon}</ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItemButton>

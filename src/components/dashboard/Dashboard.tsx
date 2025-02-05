@@ -1,7 +1,7 @@
-import type {} from '@mui/x-date-pickers/themeAugmentation';
-import type {} from '@mui/x-charts/themeAugmentation';
-import type {} from '@mui/x-data-grid/themeAugmentation';
-import type {} from '@mui/x-tree-view/themeAugmentation';
+import type { } from '@mui/x-date-pickers/themeAugmentation';
+import type { } from '@mui/x-charts/themeAugmentation';
+import type { } from '@mui/x-data-grid/themeAugmentation';
+import type { } from '@mui/x-tree-view/themeAugmentation';
 import { alpha } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -17,6 +17,9 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from './theme/customizations';
+import { useEffect, useState } from 'react';
+import ViewFacturas from './components/options/ViewFacturas';
+import { getAllFactures } from '../../services/search/SearchFactura';
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -27,10 +30,16 @@ const xThemeComponents = {
 
 export default function Dashboard(props: { disableCustomTheme?: boolean }) {
 
-  const switchInterface=(interSwitch:string) =>{
+  const [tipeInterface, setTipeInterface] = useState('Crear Factura')
 
-    console.log(interSwitch)
+  const switchInterface = (interSwitch: string) => {
+
+
+    setTipeInterface(interSwitch)
+
   }
+
+
 
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
@@ -65,7 +74,8 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
 
 
             {/* aqui se pone para que se muestre las diferentes interfaces del dashboard */}
-            <MainGrid />
+            {tipeInterface === "Crear Factura" && <MainGrid />}
+            {tipeInterface === "Ver facturas" && <ViewFacturas />}
           </Stack>
         </Box>
       </Box>
