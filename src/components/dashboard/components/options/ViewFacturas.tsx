@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { Facture } from '../../../models/factures/facture';
 import { getAllDataFacture, getAllFactures, getNumberFactureServi } from '../../../../services/search/SearchFactura';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { passNumberFacture } from '../../../models/other/interfaceOther';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -32,7 +33,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 
-export default function ViewFacturas() {
+export default function ViewFacturas( props:passNumberFacture) {
+
   const [listFactures, setListFactures] = useState<Facture[]>([]);
   const [facturedTemp, setFactureTemp] = useState<Facture[]>([]);
   const [numberSearch, setNumberSearch] = useState("")
@@ -49,7 +51,7 @@ export default function ViewFacturas() {
     }
   }, [numberSearch])
 
-  const getFactureNumber = () => {
+  const getSearchGeneralFacture = () => {
     if (numberSearch !== "") {
       setFactureTemp([...listFactures])
       getNumberFactureServi(numberSearch).then(data => {
@@ -58,6 +60,7 @@ export default function ViewFacturas() {
     }
 
   }
+
 
   return (
     <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
@@ -73,7 +76,7 @@ export default function ViewFacturas() {
         </Grid>
 
         <Grid size={{ xs: 6, sm: 4, md: 3 }} >
-          <Button variant="contained" onClick={getFactureNumber}>Buscar</Button>
+          <Button variant="contained" onClick={getSearchGeneralFacture}>Buscar</Button>
         </Grid>
 
       </Grid>
@@ -102,7 +105,7 @@ export default function ViewFacturas() {
                 <StyledTableCell align="right">{row.reference_code}</StyledTableCell>
                 <StyledTableCell align="right">{row.identification}</StyledTableCell>
                 <StyledTableCell align="right">{row.created_at}</StyledTableCell>
-                <StyledTableCell align="right"><IconButton color="primary" onClick={() => alert("Borrado")}>
+                <StyledTableCell align="right"><IconButton color="primary" onClick={() => props.getNumberFacture(row.number)}>
                   <VisibilityIcon />
                 </IconButton></StyledTableCell>
               </StyledTableRow>

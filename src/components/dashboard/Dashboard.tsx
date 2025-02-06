@@ -17,9 +17,9 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from './theme/customizations';
-import { useEffect, useState } from 'react';
 import ViewFacturas from './components/options/ViewFacturas';
-import { getAllFactures } from '../../services/search/SearchFactura';
+import ViewAllDataFacture from '../sign-in/viewAllDataFacture';
+import { useEffect, useState } from 'react';
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -31,6 +31,7 @@ const xThemeComponents = {
 export default function Dashboard(props: { disableCustomTheme?: boolean }) {
 
   const [tipeInterface, setTipeInterface] = useState('Crear Factura')
+  const [numberFacture, setNumberFacture] = useState('')
 
   const switchInterface = (interSwitch: string) => {
 
@@ -39,7 +40,20 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
 
   }
 
+  const seeAllDataFacture = (number:string)=>{
 
+    setNumberFacture(number)
+
+  }
+
+
+  useEffect(() => {
+   
+    if(numberFacture !==""){
+      setTipeInterface("Ver allData")
+    }
+
+  }, [numberFacture])
 
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
@@ -75,7 +89,8 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
 
             {/* aqui se pone para que se muestre las diferentes interfaces del dashboard */}
             {tipeInterface === "Crear Factura" && <MainGrid />}
-            {tipeInterface === "Ver facturas" && <ViewFacturas />}
+            {tipeInterface === "Ver facturas" && <ViewFacturas getNumberFacture={seeAllDataFacture}  />}
+            {tipeInterface === "Ver allData" && <ViewAllDataFacture number={numberFacture}  />}
           </Stack>
         </Box>
       </Box>

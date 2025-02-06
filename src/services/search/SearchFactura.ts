@@ -48,16 +48,16 @@ export const getNumberFactureServi = async (numberFac:String): Promise<Facture[]
 
 }
 
-export const getAllDataFacture= async (numberFacture:String): Promise<RegisterOk[]>=>{
+export const getAllDataFacture= async (numberFacture:String): Promise<RegisterOk>=>{
     const token = getTokenCookie()
     try {
-        const response = await axios.get<RegisterOk[]>(env.urlApi+`/v1/bills/show/${numberFacture}`,{
+        const response = await axios.get<RegisterOk>(env.urlApi+`/v1/bills/show/${numberFacture}`,{
             headers:{
                 Authorization: `Bearer ${token}`
             }
         })
-        return response.data
+        return response.data.data
     } catch (error) {
-        return []
+        return new RegisterOk
     }
 }
