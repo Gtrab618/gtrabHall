@@ -5,7 +5,7 @@ import { Copyright } from '@mui/icons-material';
 import { Button, IconButton, Paper, styled, Table, TableBody, TableCell, tableCellClasses, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Facture } from '../../../models/factures/facture';
-import { getAllFactures, getNumberFactureServi } from '../../../../services/search/SearchFactura';
+import { getAllDataFacture, getAllFactures, getNumberFactureServi } from '../../../../services/search/SearchFactura';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 
@@ -55,10 +55,7 @@ export default function ViewFacturas() {
       getNumberFactureServi(numberSearch).then(data => {
         setListFactures(data)
       })
-
-
     }
-
 
   }
 

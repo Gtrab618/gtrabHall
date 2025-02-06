@@ -17,14 +17,7 @@ import { swichInterface } from '../interfaces/swichInterface';
 const mainListItems = [
   { text: 'Crear Factura', icon: <NoteAddIcon/> },
   { text: 'Ver facturas', icon: <VisibilityIcon /> },
-  { text: 'Validar facturas', icon: <FactCheckIcon /> },
-  { text: 'Eliminar facturas', icon: <FolderDeleteIcon /> },
-];
-
-const secondaryListItems = [
-  { text: 'Settings', icon: <SettingsRoundedIcon /> },
-  { text: 'About', icon: <InfoRoundedIcon /> },
-  { text: 'Feedback', icon: <HelpRoundedIcon /> },
+  
 ];
 
 
@@ -45,16 +38,7 @@ export default function MenuContent(props:swichInterface) {
           </ListItem>
         ))}
       </List>
-      <List dense>
-        {secondaryListItems.map((item, index) => (
-          <ListItem key={index} disablePadding sx={{ display: 'block' }}>
-            <ListItemButton>
-              <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+   
     </Stack>
   );
 }

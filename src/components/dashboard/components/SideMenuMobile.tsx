@@ -68,7 +68,6 @@ export default function SideMenuMobile({ open, toggleDrawer, interfaceSelected }
           <MenuContent interfaceSelected={interfaceSelected}/>
           <Divider />
         </Stack>
-        <CardAlert />
         <Stack sx={{ p: 2 }}>
           <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
             Logout

@@ -8,7 +8,6 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import SelectContent from './SelectContent';
 import MenuContent from './MenuContent';
-import CardAlert from './CardAlert';
 import OptionsMenu from './OptionsMenu';
 import { swichInterface } from '../interfaces/swichInterface';
 
@@ -46,7 +45,7 @@ export default function SideMenu(props:swichInterface) {
           p: 1.5,
         }}
       >
-        <SelectContent />
+      
       </Box>
       <Divider />
       <Box
@@ -58,7 +57,7 @@ export default function SideMenu(props:swichInterface) {
         }}
       >
         <MenuContent interfaceSelected={props.interfaceSelected} />
-        <CardAlert />
+    
       </Box>
       <Stack
         direction="row"
