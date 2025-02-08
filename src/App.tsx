@@ -2,10 +2,11 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
 import Dashboard from './components/dashboard/Dashboard'
 import SignIn from './components/sign-in/SignIn'
-import ViewAllDataFacture from './components/sign-in/viewAllDataFacture'
+import ProtectedRoutes from './services/auth/ProtectedRoutes'
 
 
 function App() {
+ 
 
   return (
 
@@ -14,8 +15,16 @@ function App() {
       <Routes>
 
         <Route index element={<SignIn/>}></Route>
-        <Route path='/dashboard' element={<Dashboard/>}></Route> 
-        <Route path='/allDataFacture' element={<ViewAllDataFacture/>}></Route> 
+       
+
+        <Route path='/dashboard' element={
+          <ProtectedRoutes>
+            <Dashboard/>
+          </ProtectedRoutes>
+        }/>
+
+       
+        
       </Routes>
 
     </BrowserRouter>

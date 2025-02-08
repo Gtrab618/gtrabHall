@@ -6,7 +6,6 @@ import { Tributes } from "../components/models/other/tributes";
 import { Municipios } from "../components/models/other/municipios";
 import { Unidades } from "../components/models/other/unidades";
 import { Factura } from "../components/models/other/factura";
-import { ThirtyFpsRounded } from "@mui/icons-material";
 import { RegisterOk } from "../components/models/savedFactura/registerOk";
 
 export function getTokenCookie() {
@@ -19,6 +18,12 @@ export function deleteTokenCookie(err: any) {
         Cookies.remove('authToken')
     }
 }
+
+export function removeCookie(){
+    Cookies.remove('authToken')
+
+}
+
 export const getRanges = async (): Promise<Ranges[]> => {
     const token = getTokenCookie()
 

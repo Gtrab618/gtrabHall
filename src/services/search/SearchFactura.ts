@@ -3,6 +3,7 @@ import { Facture } from "../../components/models/factures/facture";
 import { env } from "../../env/entorno";
 import { deleteTokenCookie, getTokenCookie } from "../PayloadFacService";
 import { RegisterOk } from "../../components/models/savedFactura/registerOk";
+import { PdfBase } from "../../components/models/other/pdfBase";
 
 export const getAllFactures = async (): Promise<Facture[]>=>{
     const token = getTokenCookie()
@@ -60,4 +61,21 @@ export const getAllDataFacture= async (numberFacture:String): Promise<RegisterOk
     } catch (error) {
         return new RegisterOk
     }
+}
+
+export const getPdfBase64 = async (numberFacture:String) : Promise<PdfBase>=>{
+    const token = getTokenCookie()
+    try{
+        const response = await axios.get<PdfBase>(env.urlApi+`/v1/bills/download-pdf/${numberFacture}`,{
+            headers:{
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return response.data.data
+
+    }catch(error){
+        return new PdfBase
+    }
+
 }

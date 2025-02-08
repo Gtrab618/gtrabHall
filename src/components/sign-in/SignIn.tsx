@@ -122,6 +122,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
     singInServi(usuario).then(data=>{
 
       saveToken(data.access_token)
+      localStorage.removeItem("timeExpi")
       navigate("/dashboard")
       
     }).catch(error =>{
