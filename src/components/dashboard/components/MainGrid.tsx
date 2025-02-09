@@ -22,6 +22,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { withholding } from '../../models/other/withholding';
 import { CodeStandard } from '../../models/other/codeStandard';
 import { Factura } from '../../models/other/factura';
+import { passNumberFacture } from '../../models/other/interfaceOther';
 
 const listPayForm = [
   { text: 'Pago al contado', id: '1' },
@@ -64,7 +65,7 @@ const listIdentity = [
   { text: 'NIT otro país', id: '10' },
   { text: 'NUIP*', id: '11' },
 ];
-export default function MainGrid() {
+export default function MainGrid(props:passNumberFacture) {
   const [ranges, setRanges] = useState<Ranges[]>([]);
   const [tributes, setTributes] = useState<Tributes[]>([]);
   const [municipios, setMunicipios] = useState<Municipios[]>([]);
@@ -95,6 +96,7 @@ export default function MainGrid() {
   const [addres, setAddres] = useState("Calle San vicente 1")
   const [numberPhone, setNumberPhone] = useState("01065321");
   const [legalOrganization, setLegalOrganization] = useState("1");
+  const [btnLoad,setBtnLoad]=useState(false)
 
   const [items, setItems] = useState<Items[]>([])
   const [message, setMessage] = useState("");
@@ -201,6 +203,7 @@ export default function MainGrid() {
   };
 
   const revisionFactura = () => {
+    setBtnLoad(true)
     const factura: Factura = new Factura();
 
     factura.observation = observation
@@ -250,17 +253,19 @@ export default function MainGrid() {
 
     saveFactura(factura).then (data =>{
       
-      setMessage("Factura creada exitosamente")
+      setMessage("Factura creada exitosamente")   
       setOpen(true)
-
+      props.getNumberFacture(data.bill.number)
+    
     }).catch(error=>{
-     
-      setMessage(error.response.data.message)
-      setOpen(true)
-      if(error.response.data.message==="Error de validación"){
-        console.log(error.response)
-        setMessage(message+ " ver consola falta algún dato")
+      console.log(error)
+      if(error.response.data.data){
+        setMessage("Error:"+JSON.stringify(error.response.data.data, null, 2))   
+      }else{
+        setMessage("Error: Seleccione ReteRenta ->"+JSON.stringify(error.response.data, null, 2)) 
       }
+      setBtnLoad(false)
+      setOpen(true)
     })
 
 
@@ -676,7 +681,7 @@ export default function MainGrid() {
           marginTop: "20px"
         }}
       >
-        <Button variant="contained" color="success" onClick={revisionFactura}>
+        <Button variant="contained" color="success" onClick={revisionFactura} loading={btnLoad}>
           Generar Factura
         </Button>
       </Box>

@@ -88,7 +88,7 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
 
 
             {/* aqui se pone para que se muestre las diferentes interfaces del dashboard */}
-            {tipeInterface === "Crear Factura" && <MainGrid />}
+            {tipeInterface === "Crear Factura" && <MainGrid getNumberFacture={seeAllDataFacture} />}
             {tipeInterface === "Ver facturas" && <ViewFacturas getNumberFacture={seeAllDataFacture}  />}
             {tipeInterface === "Ver allData" && <ViewAllDataFacture number={numberFacture}  />}
           </Stack>

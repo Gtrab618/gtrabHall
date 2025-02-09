@@ -7,6 +7,7 @@ import { Municipios } from "../components/models/other/municipios";
 import { Unidades } from "../components/models/other/unidades";
 import { Factura } from "../components/models/other/factura";
 import { RegisterOk } from "../components/models/savedFactura/registerOk";
+import { Company } from "../components/models/savedFactura/company";
 
 export function getTokenCookie() {
     const token = Cookies.get('authToken')
@@ -19,7 +20,7 @@ export function deleteTokenCookie(err: any) {
     }
 }
 
-export function removeCookie(){
+export function removeCookie() {
     Cookies.remove('authToken')
 
 }
@@ -93,8 +94,9 @@ export const getUnidades = async (): Promise<Unidades[]> => {
     }
 }
 
-export const saveFactura = async (factu: Factura): Promise<any> => {
+export const saveFactura = async (factu: Factura): Promise<RegisterOk> => {
     const token = getTokenCookie()
+
 
 
     const response = await axios.post<RegisterOk>(env.urlApi + '/v1/bills/validate',
@@ -104,9 +106,11 @@ export const saveFactura = async (factu: Factura): Promise<any> => {
             Authorization: `Bearer ${token}`
         }
     });
+    return response.data.data
 
 
-    return response
+
+
 
 
 
