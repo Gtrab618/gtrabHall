@@ -73,7 +73,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
- 
+
 
   const handleClose = () => {
     setOpen(false);
@@ -97,7 +97,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
 
     let isValid = true;
 
-    if (!email.value || email.value !=='sandbox@factus.com.co') {
+    if (!email.value || email.value !== 'asdfasdfadfas') {
       setEmailError(true);
       setEmailErrorMessage('Usuario incorrecto');
       isValid = false;
@@ -106,7 +106,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value !=='sandbox2024%') {
+    if (!password.value || password.value !== 'asdfasfd') {
       setPasswordError(true);
       setPasswordErrorMessage('Contraseña incorrecta');
       isValid = false;
@@ -115,20 +115,20 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
       setPasswordErrorMessage('');
     }
 
-    usuario.username=email.value
-    usuario.password=password.value
+    usuario.username = email.value
+    usuario.password = password.value
     console.log(usuario)
-   
-    singInServi(usuario).then(data=>{
+
+    singInServi(usuario).then(data => {
 
       saveToken(data.access_token)
       localStorage.removeItem("timeExpi")
       navigate("/dashboard")
-      
-    }).catch(error =>{
+
+    }).catch(error => {
       console.log(error)
     })
-   
+
   };
 
   return (
@@ -142,13 +142,13 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
             sx={{ margin: '0' }}>
 
             <div style={{ display: 'inline-flex', alignItems: 'center' }}>
-            <Icon icon="simple-icons:lionair" style={{ marginRight: '3px', marginLeft:'3px', fontSize: '24px' }} />
+              <Icon icon="simple-icons:lionair" style={{ marginRight: '3px', marginLeft: '3px', fontSize: '24px' }} />
               <span>Gtrab618</span>
-              <Icon icon="eos-icons:atom-electron" style={{ marginRight: '3px', marginLeft:'3px', fontSize: '24px' }} />
+              <Icon icon="eos-icons:atom-electron" style={{ marginRight: '3px', marginLeft: '3px', fontSize: '24px' }} />
               <span>Halltec</span>
               <Icon icon="material-symbols:format-text-clip-rounded" />
             </div>
-            
+
           </Typography>
 
 
@@ -178,7 +178,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                 id="email"
                 type="email"
                 name="email"
-                defaultValue={"sandbox@factus.com.co"}
+                defaultValue={"sasdfsadf"}
                 autoComplete="email"
                 autoFocus
                 required
@@ -193,7 +193,7 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
                 error={passwordError}
                 helperText={passwordErrorMessage}
                 name="password"
-                defaultValue={"sandbox2024%"}
+                defaultValue={"asdfasdf%"}
                 placeholder="••••••"
                 id="password"
                 autoComplete="current-password"
@@ -210,16 +210,16 @@ export default function SignIn(props: { disableCustomTheme?: boolean }) {
             />
             <ForgotPassword open={open} handleClose={handleClose} />
             <Button
-              
+
               fullWidth
               variant="contained"
               onClick={validateInputs}
             >
               Sign in
             </Button>
-     
+
           </Box>
-    
+
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
 
           </Box>
